@@ -817,7 +817,14 @@
     // ---- LIVE CLOUD SYNC (optional) ----
     // Paste your Firebase web-app config between the braces to turn on the live leaderboard (see FIREBASE_SETUP.md).
     // While this is null the app works exactly as before, on each device only.
-    const FIREBASE_CONFIG = null;
+    const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAkZyY_OSOwR6Qrppry6iSlBIO2GhkyN3Y",
+  authDomain: "math-academy-3195c.firebaseapp.com",
+  projectId: "math-academy-3195c",
+  storageBucket: "math-academy-3195c.firebasestorage.app",
+  messagingSenderId: "155622496664",
+  appId: "1:155622496664:web:1d9ca58b56a7206df273ed"
+};
 
     const Cloud = {
       db: null, uid: null, ready: false, list: [], timers: {},
