@@ -1,0 +1,1943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PUMS SIKKARAYAPURAM - கணிதத் திறன் மேம்பாட்டு தளம்</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&family=Tiro+Tamil:ital@0;1&family=Cinzel:wght@700;800;900&family=Great+Vibes&display=swap" rel="stylesheet">
+  
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: linear-gradient(135deg, #f0f7ff 0%, #f5f3ff 50%, #eff6ff 100%);
+      min-height: 100vh;
+    }
+    .heading-font {
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .tamil-font {
+      font-family: 'Tiro Tamil', serif;
+    }
+    .cert-heading {
+      font-family: 'Cinzel', serif;
+    }
+    .signature-font {
+      font-family: 'Great Vibes', cursive;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      box-shadow: 0 10px 30px -5px rgba(30, 58, 138, 0.08);
+    }
+    .key-press:active {
+      transform: scale(0.95);
+    }
+
+    /* ============================================================ */
+    /* STRICT PRINT STYLES - A4 LANDSCAPE DEDICATED PRINT CONTAINER */
+    /* ============================================================ */
+    @page {
+      size: A4 landscape;
+      margin: 6mm;
+    }
+
+    @media print {
+      html, body {
+        width: 100% !important;
+        height: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+        overflow: hidden !important;
+      }
+
+      /* Hide entire website chrome */
+      header,
+      #viewDashboard,
+      #viewOperations,
+      #viewSubtopics,
+      #viewArena,
+      #viewLifestyle,
+      #registrationModal,
+      #stealthInspectorModal,
+      .no-print {
+        display: none !important;
+      }
+
+      /* Isolated Full-Page Certificate */
+      #viewCertificate {
+        display: block !important;
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        background: #ffffff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        z-index: 999999 !important;
+      }
+
+      #printableCertificateCard {
+        width: 278mm !important;
+        height: 190mm !important;
+        margin: 0 auto !important;
+        box-sizing: border-box !important;
+        border: 8px double #92400e !important;
+        border-radius: 12px !important;
+        padding: 8mm 12mm !important;
+        background: #fffdf9 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        box-shadow: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="text-slate-800 antialiased selection:bg-indigo-600 selection:text-white pb-12">
+
+  <!-- TOP HEADER -->
+  <header class="sticky top-0 z-40 border-b border-indigo-100 bg-white/90 backdrop-blur-md shadow-sm no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <!-- STEALTH TRIGGER: Triple-click the emblem or press Ctrl+Shift+M -->
+        <button id="stealthEmblemTrigger" type="button" title="PUMS Portal (Click 3 times for Teacher Console)" class="cursor-pointer select-none w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-600 via-blue-600 to-indigo-700 flex items-center justify-center text-white text-xl font-black shadow-md border-2 border-white transition active:scale-95">
+          <i class="fa-solid fa-shapes"></i>
+        </button>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-base sm:text-lg font-black text-slate-900 tracking-tight heading-font">PUMS SIKKARAYAPURAM</h1>
+            <span class="hidden sm:inline-block px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-[11px] font-extrabold rounded-md uppercase">Govt School Portal</span>
+          </div>
+          <p class="text-xs text-indigo-700 font-bold tamil-font">கணிதத் திறன் மேம்பாட்டு தளம் (Mathematics Skill Development Portal)</p>
+        </div>
+      </div>
+
+      <!-- Active Student Badge & Sibling Switcher -->
+      <div id="headerProfileBadge" class="hidden flex items-center gap-2">
+        <div class="relative">
+          <button onclick="App.toggleAccountDropdown()" class="flex items-center gap-2.5 bg-indigo-50 hover:bg-indigo-100/80 border border-indigo-200/80 px-3.5 py-1.5 rounded-2xl shadow-sm transition text-left">
+            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
+            <div>
+              <p id="topBarStudentName" class="text-xs font-black text-slate-800 leading-none"></p>
+              <p id="topBarStudentMeta" class="text-[10px] text-slate-500 font-semibold leading-tight mt-0.5"></p>
+            </div>
+            <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 ml-1"></i>
+          </button>
+
+          <!-- Sibling / Student Account Dropdown Menu -->
+          <div id="accountDropdownMenu" class="hidden absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-xl border border-indigo-100 py-2 z-50">
+            <div class="px-3.5 py-2 border-b border-slate-100 flex items-center justify-between">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Switch Sibling / Student</span>
+              <span class="text-[10px] bg-indigo-100 text-indigo-700 font-bold px-2 py-0.5 rounded-full" id="profileCountBadge">0 Profiles</span>
+            </div>
+            <div id="accountProfilesList" class="max-h-56 overflow-y-auto divide-y divide-slate-50"></div>
+            <div class="p-2 border-t border-slate-100">
+              <button onclick="App.openAddSiblingModal()" class="w-full py-2.5 px-3 text-xs font-bold text-indigo-600 hover:bg-indigo-50 rounded-xl transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-user-plus text-xs"></i>
+                <span>Add Sibling (உடன் பிறந்தவர் சேர்க்க)</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN VIEWPORT CONTAINER -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+
+    <!-- VIEW 1: STUDENT DASHBOARD -->
+    <section id="viewDashboard" class="hidden space-y-6">
+      <!-- Profile Card -->
+      <div class="glass-card rounded-3xl p-6 sm:p-8 border border-white/80 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div class="flex items-center gap-4">
+          <div class="w-16 h-16 rounded-3xl bg-gradient-to-tr from-indigo-500 to-indigo-700 text-white flex items-center justify-center text-2xl font-black shadow-lg shadow-indigo-200">
+            <span id="dashAvatarInitial">S</span>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h2 id="dashStudentName" class="text-2xl font-black text-slate-900 heading-font"></h2>
+              <span id="dashClassPill" class="text-xs font-bold bg-indigo-100 text-indigo-800 px-3 py-0.5 rounded-full"></span>
+            </div>
+            <p id="dashSchoolInfo" class="text-xs sm:text-sm text-slate-500 font-medium mt-1">
+              <i class="fa-solid fa-school text-indigo-500 mr-1.5"></i>
+              <span id="dashSchoolNameText"></span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Quick Switch / Add Sibling on Dashboard -->
+        <div class="flex items-center gap-2.5 w-full md:w-auto">
+          <button onclick="App.openAddSiblingModal()" class="flex-1 md:flex-initial px-4 py-2.5 bg-white border border-indigo-200 text-indigo-700 hover:bg-indigo-50 rounded-2xl text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm">
+            <i class="fa-solid fa-plus-circle"></i>
+            <span>Add Sibling</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats Grid (Leaderboard Completely Removed) -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm flex items-center gap-4">
+          <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center text-xl font-bold">
+            <i class="fa-solid fa-bolt"></i>
+          </div>
+          <div>
+            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Core Points</p>
+            <p id="dashCorePoints" class="text-2xl font-black text-slate-800">0</p>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm flex items-center gap-4">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl font-bold">
+            <i class="fa-solid fa-leaf"></i>
+          </div>
+          <div>
+            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Lifestyle Pts</p>
+            <p id="dashLifestylePoints" class="text-2xl font-black text-emerald-700">0</p>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm flex items-center gap-4">
+          <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl font-bold">
+            <i class="fa-solid fa-certificate"></i>
+          </div>
+          <div>
+            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Certificates</p>
+            <p id="dashCertificatesCount" class="text-2xl font-black text-blue-700">0</p>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm flex items-center gap-4">
+          <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl font-bold">
+            <i class="fa-solid fa-award"></i>
+          </div>
+          <div>
+            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Current Tier</p>
+            <p id="dashTierStatus" class="text-sm font-black text-purple-700">Level 1 Path</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Launchpad -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <!-- Main Curriculum Learning -->
+        <div class="bg-gradient-to-br from-indigo-600 via-indigo-700 to-blue-800 rounded-3xl p-7 text-white shadow-xl flex flex-col justify-between relative overflow-hidden group">
+          <div class="relative z-10">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/15 backdrop-blur-md rounded-full text-xs font-bold text-indigo-100 mb-3">
+              <i class="fa-solid fa-graduation-cap"></i> Step-by-Step Curriculum
+            </div>
+            <h3 class="text-2xl font-black heading-font tracking-tight">கணித அடிப்படைக் கற்றல்</h3>
+            <p class="text-indigo-100 text-sm mt-1">Addition, Subtraction, Multiplication & Division adapted for Class <span id="dashHeroClassNum">1</span>.</p>
+          </div>
+          <div class="mt-8 relative z-10">
+            <button onclick="App.showOperationsMenu()" class="w-full sm:w-auto px-7 py-3.5 bg-white text-indigo-700 hover:bg-indigo-50 font-black rounded-2xl shadow-lg transition active:scale-95 flex items-center justify-center gap-2">
+              <span>Start Learning (தொடங்கு)</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Practical Lifestyle Maths -->
+        <div class="bg-gradient-to-br from-emerald-600 via-teal-700 to-emerald-800 rounded-3xl p-7 text-white shadow-xl flex flex-col justify-between relative overflow-hidden group">
+          <div class="relative z-10">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/15 backdrop-blur-md rounded-full text-xs font-bold text-emerald-100 mb-3">
+              <i class="fa-solid fa-store"></i> Tamil Nadu Real-Life Scenarios
+            </div>
+            <h3 class="text-2xl font-black heading-font tracking-tight tamil-font">வாழ்க்கைக் கணிதம்</h3>
+            <p class="text-emerald-100 text-sm mt-1">Shandy market change, bus ticket fares, ration shop kg/g, garden fencing & piggy bank savings.</p>
+          </div>
+          <div class="mt-8 relative z-10">
+            <button onclick="App.showLifestyleArena()" class="w-full sm:w-auto px-7 py-3.5 bg-white text-emerald-800 hover:bg-emerald-50 font-black rounded-2xl shadow-lg transition active:scale-95 flex items-center justify-center gap-2">
+              <span>Enter Lifestyle Arena</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+            <button onclick="App.showLeaderboard('all')" class="w-full sm:w-auto mt-3 px-7 py-3 bg-emerald-900/40 hover:bg-emerald-900/60 text-white font-black rounded-2xl border border-white/30 transition active:scale-95 flex items-center justify-center gap-2">
+              <span>🏆 Leaderboard · தரவரிசை</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Earned Certificates Gallery -->
+      <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+        <h4 class="text-base font-black text-slate-800 heading-font flex items-center gap-2">
+          <i class="fa-solid fa-award text-amber-500"></i>
+          <span>My Earned Certificates</span>
+        </h4>
+        <div id="earnedCertificatesList" class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 2: OPERATIONS MENU -->
+    <section id="viewOperations" class="hidden space-y-6">
+      <div class="flex items-center justify-between">
+        <button onclick="App.showDashboard()" class="text-xs font-bold text-indigo-700 hover:text-indigo-900 bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-200 transition flex items-center gap-2">
+          <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+        </button>
+        <span class="text-xs font-bold text-slate-500">Step 1 of 3: Choose Operation</span>
+      </div>
+
+      <div class="text-center max-w-xl mx-auto">
+        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 heading-font">Select Mathematical Operation</h2>
+        <p class="text-sm text-slate-500 mt-1">எந்த கணித செயல்பாட்டை கற்க விரும்புகிறீர்கள்?</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <!-- Addition -->
+        <button onclick="App.selectOperation('Addition')" class="bg-white hover:bg-indigo-50/50 border-2 border-indigo-100 hover:border-indigo-500 rounded-3xl p-6 text-left transition transform hover:-translate-y-1 shadow-sm flex flex-col justify-between h-56">
+          <div class="w-14 h-14 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-3xl font-black">
+            +
+          </div>
+          <div>
+            <h3 class="text-xl font-black text-slate-900">கூட்டல்</h3>
+            <p class="text-sm font-bold text-indigo-600">Addition</p>
+            <p class="text-xs text-slate-400 mt-1">Putting numbers together</p>
+          </div>
+        </button>
+
+        <!-- Subtraction -->
+        <button onclick="App.selectOperation('Subtraction')" class="bg-white hover:bg-rose-50/50 border-2 border-rose-100 hover:border-rose-500 rounded-3xl p-6 text-left transition transform hover:-translate-y-1 shadow-sm flex flex-col justify-between h-56">
+          <div class="w-14 h-14 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-3xl font-black">
+            −
+          </div>
+          <div>
+            <h3 class="text-xl font-black text-slate-900">கழித்தல்</h3>
+            <p class="text-sm font-bold text-rose-600">Subtraction</p>
+            <p class="text-xs text-slate-400 mt-1">Taking away & finding difference</p>
+          </div>
+        </button>
+
+        <!-- Multiplication -->
+        <button onclick="App.selectOperation('Multiplication')" class="bg-white hover:bg-amber-50/50 border-2 border-amber-100 hover:border-amber-500 rounded-3xl p-6 text-left transition transform hover:-translate-y-1 shadow-sm flex flex-col justify-between h-56">
+          <div class="w-14 h-14 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-3xl font-black">
+            ×
+          </div>
+          <div>
+            <h3 class="text-xl font-black text-slate-900">பெருக்கல்</h3>
+            <p class="text-sm font-bold text-amber-600">Multiplication</p>
+            <p class="text-xs text-slate-400 mt-1">Repeated addition & tables</p>
+          </div>
+        </button>
+
+        <!-- Division -->
+        <button onclick="App.selectOperation('Division')" class="bg-white hover:bg-emerald-50/50 border-2 border-emerald-100 hover:border-emerald-500 rounded-3xl p-6 text-left transition transform hover:-translate-y-1 shadow-sm flex flex-col justify-between h-56">
+          <div class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-3xl font-black">
+            ÷
+          </div>
+          <div>
+            <h3 class="text-xl font-black text-slate-900">வகுத்தல்</h3>
+            <p class="text-sm font-bold text-emerald-600">Division</p>
+            <p class="text-xs text-slate-400 mt-1">Equal sharing & grouping</p>
+          </div>
+        </button>
+      </div>
+    </section>
+
+    <!-- VIEW 3: SUBTOPICS MENU -->
+    <section id="viewSubtopics" class="hidden space-y-6">
+      <div class="flex items-center justify-between">
+        <button onclick="App.showOperationsMenu()" class="text-xs font-bold text-indigo-700 hover:text-indigo-900 bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-200 transition flex items-center gap-2">
+          <i class="fa-solid fa-arrow-left"></i> Change Operation
+        </button>
+        <span class="text-xs font-bold text-slate-500">Step 2 of 3: Choose Subtopic</span>
+      </div>
+
+      <div class="text-center max-w-xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs font-extrabold uppercase mb-2" id="subtopicOperationBadge">
+          Operation
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 heading-font" id="subtopicsTitle">Curriculum Subtopics</h2>
+        <p class="text-sm text-slate-500 mt-1" id="subtopicsGradeNotice">Appropriate for your class level</p>
+      </div>
+
+      <div id="subtopicsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Subtopics injected dynamically based on grade and chosen operation -->
+      </div>
+    </section>
+
+    <!-- VIEW 4: QUESTION ARENA -->
+    <section id="viewArena" class="hidden max-w-3xl mx-auto space-y-6">
+      <div class="flex items-center justify-between">
+        <button onclick="App.exitArenaPrompt()" class="text-xs font-bold text-slate-600 hover:text-slate-900 bg-white px-3.5 py-1.5 rounded-xl shadow-sm border border-slate-200 transition flex items-center gap-2">
+          <i class="fa-solid fa-arrow-left"></i> Exit Practice
+        </button>
+        <div class="flex items-center gap-3">
+          <div class="flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-xl text-xs font-black">
+            <i class="fa-solid fa-fire text-amber-500"></i>
+            <span>Streak: <span id="arenaStreakCount">0</span></span>
+          </div>
+          <div class="flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-700 border border-blue-200 rounded-xl text-xs font-black">
+            <i class="fa-solid fa-stopwatch text-blue-500"></i>
+            <span id="arenaTimer">0s</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Problem Presentation Card -->
+      <div class="glass-card rounded-3xl p-8 border border-white/80 shadow-xl text-center relative overflow-hidden">
+        <!-- Progress Bar across the 5 mastery steps -->
+        <div class="flex items-center justify-between text-xs font-bold text-slate-400 mb-2">
+          <span>Level Progress</span>
+          <span id="arenaLevelProgressText">Step 1 of 5</span>
+        </div>
+        <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden mb-6">
+          <div id="arenaProgressBar" class="h-full bg-gradient-to-r from-indigo-500 to-emerald-500 w-1/5 transition-all duration-300"></div>
+        </div>
+
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-black bg-slate-100 text-slate-700 mb-4" id="arenaLevelPill">
+          Level 0: Foundation
+        </div>
+
+        <!-- Big Math Equation Prompt -->
+        <div class="py-6 min-h-[140px] flex flex-col items-center justify-center">
+          <p id="arenaContextHint" class="text-xs sm:text-sm text-slate-400 font-semibold mb-2"></p>
+          <div id="arenaProblemEquation" class="text-4xl sm:text-5xl font-black text-slate-900 heading-font tracking-wide">
+            <!-- Dynamic Problem Text (e.g. 3 + 4 = ?) -->
+          </div>
+        </div>
+
+        <!-- Feedback Alert Banner -->
+        <div id="arenaFeedback" class="hidden mb-4 p-3 rounded-2xl text-xs font-bold transition"></div>
+
+        <!-- Student Answer Input Form -->
+        <form id="arenaAnswerForm" onsubmit="App.handleAnswerSubmit(event)" class="max-w-md mx-auto space-y-4">
+          <div class="flex items-center gap-3">
+            <input 
+              id="arenaAnswerInput" 
+              type="text" 
+              inputmode="numeric" 
+              pattern="[0-9/.-]*"
+              autocomplete="off" 
+              placeholder="Enter answer..." 
+              required
+              class="w-full text-center text-2xl font-black py-3.5 px-4 rounded-2xl border-2 border-indigo-200 focus:border-indigo-600 focus:outline-none focus:ring-4 focus:ring-indigo-100 transition shadow-inner"
+            />
+            <button type="submit" class="px-6 py-4 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-black rounded-2xl shadow-lg shadow-indigo-200 transition text-sm flex items-center justify-center gap-1.5">
+              <span>Check</span>
+              <i class="fa-solid fa-check"></i>
+            </button>
+          </div>
+        </form>
+
+        <!-- On-Screen Number Keypad for touch/tablet devices -->
+        <div class="mt-6 pt-6 border-t border-slate-100 max-w-xs mx-auto">
+          <div class="grid grid-cols-3 gap-2">
+            <button onclick="App.keypadPress('1')" class="key-press py-3 bg-slate-50 hover:bg-slate-100 rounded-xl font-black text-lg text-slate-700 shadow-sm border border-slate-200">1</button>
+            <button onclick="App.keypadPress('2')" class="key-press py-3 bg-slate-50 hover:bg-slate-100 rounded-xl font-black text-lg text-slate-700 shadow-sm border border-slate-200">2</button>
+            <button onclick="App.keypadPress('3')" class="key-press py-3 bg-slate-50 hover:bg-slate-100 rounded-xl font-black text-lg text-slate-700 shadow-sm border border-slate-200">3</button>
+            <button onclick="App.keypadPress('4')" class="key-press py-3 bg-slate-50 hover:bg-slate-100 rounded-xl font-black text-lg text-slate-700 shadow-sm border border-slate-200">4</button>
+            <button onclick="App.keypadPress('5')" class="key-press py-3 bg-slate-50 hover:bg-slate-100 rounded-xl font-black text-lg text-slate-700 shadow-sm border border-slate-200">5</button>
+            <button onclick="App.keypadPress('6')" class="key-press py-3 bg-slate-50 hover:bg-slate-100 rounded-xl font-black text-lg text-slate-700 shadow-sm border border-slate-200">6</button>
+            <button onclick="App.keypadPress('7')" class="key-press py-3 bg-slate-50 hover:bg-slate-100 rounded-xl font-black text-lg text-slate-700 shadow-sm border border-slate-200">7</button>
+            <button onclick="App.keypadPress('8')" class="key-press py-3 bg-slate-50 hover:bg-slate-100 rounded-xl font-black text-lg text-slate-700 shadow-sm border border-slate-200">8</button>
+            <button onclick="App.keypadPress('9')" class="key-press py-3 bg-slate-50 hover:bg-slate-100 rounded-xl font-black text-lg text-slate-700 shadow-sm border border-slate-200">9</button>
+            <button onclick="App.keypadPress('-')" class="key-press py-3 bg-slate-50 hover:bg-slate-100 rounded-xl font-black text-lg text-slate-700 shadow-sm border border-slate-200">−</button>
+            <button onclick="App.keypadPress('0')" class="key-press py-3 bg-slate-50 hover:bg-slate-100 rounded-xl font-black text-lg text-slate-700 shadow-sm border border-slate-200">0</button>
+            <button onclick="App.keypadBackspace()" class="key-press py-3 bg-rose-50 hover:bg-rose-100 rounded-xl font-bold text-sm text-rose-600 shadow-sm border border-rose-200 flex items-center justify-center">
+              <i class="fa-solid fa-delete-left"></i>
+            </button>
+          </div>
+          <div class="grid grid-cols-2 gap-2 mt-2">
+            <button onclick="App.keypadPress('.')" class="key-press py-3 bg-slate-50 hover:bg-slate-100 rounded-xl font-black text-lg text-slate-700 shadow-sm border border-slate-200">.</button>
+            <button onclick="App.keypadPress('/')" class="key-press py-3 bg-slate-50 hover:bg-slate-100 rounded-xl font-black text-lg text-slate-700 shadow-sm border border-slate-200">/</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 5: LIFESTYLE MATHS (வாழ்க்கைக் கணிதம்) -->
+    <section id="viewLeaderboard" class="hidden max-w-3xl mx-auto space-y-5">
+      <div class="flex items-center justify-between gap-2">
+        <button onclick="App.leaderboardBack()" class="text-xs font-bold text-indigo-700 bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-200 flex items-center gap-2">
+          <i class="fa-solid fa-arrow-left"></i> Back
+        </button>
+        <div class="flex gap-2">
+          <button id="lbTabAll" onclick="App.showLeaderboard('all')" class="px-3 py-2 rounded-xl text-xs font-black">Whole School</button>
+          <button id="lbTabClass" onclick="App.showLeaderboard('class')" class="px-3 py-2 rounded-xl text-xs font-black">My Class</button>
+        </div>
+      </div>
+      <div class="bg-white rounded-3xl p-6 shadow-xl border border-slate-200">
+        <h2 class="text-xl font-black text-slate-900">🏆 Leaderboard · தரவரிசை</h2>
+        <p id="lbStatus" class="text-xs text-slate-500 mt-1"></p>
+        <div id="leaderboardList" class="mt-4 space-y-2"></div>
+      </div>
+    </section>
+
+    <section id="viewLifestyle" class="hidden max-w-3xl mx-auto space-y-6">
+      <div class="flex items-center justify-between">
+        <button onclick="App.showDashboard()" class="text-xs font-bold text-emerald-800 hover:text-emerald-950 bg-white px-4 py-2 rounded-xl shadow-sm border border-emerald-200 transition flex items-center gap-2">
+          <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+        </button>
+        <span class="text-xs font-black bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full">
+          Lifestyle Points: <span id="lifestyleCurrentScore">0</span>
+        </span>
+      </div>
+
+      <div class="glass-card rounded-3xl p-8 border border-emerald-100 shadow-xl text-center">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-black mb-3">
+          <i class="fa-solid fa-basket-shopping"></i> Real-Life Tamil Nadu Problem
+        </div>
+        <h2 id="lifestyleStoryTitle" class="text-xl sm:text-2xl font-black text-slate-900 heading-font"></h2>
+        
+        <div class="my-6 p-5 bg-emerald-50/70 border border-emerald-200/80 rounded-2xl text-left">
+          <p id="lifestyleStoryPrompt" class="text-base text-slate-800 font-medium leading-relaxed"></p>
+        </div>
+
+        <div id="lifestyleFeedback" class="hidden mb-4 p-3 rounded-2xl text-xs font-bold transition"></div>
+
+        <form id="lifestyleForm" onsubmit="App.handleLifestyleSubmit(event)" class="max-w-md mx-auto space-y-4">
+          <div class="flex items-center gap-3">
+            <input 
+              id="lifestyleAnswerInput" 
+              type="number" 
+              step="any"
+              autocomplete="off" 
+              placeholder="Your answer..." 
+              required
+              class="w-full text-center text-2xl font-black py-3.5 px-4 rounded-2xl border-2 border-emerald-300 focus:border-emerald-600 focus:outline-none focus:ring-4 focus:ring-emerald-100 transition shadow-inner"
+            />
+            <button type="submit" class="px-6 py-4 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-black rounded-2xl shadow-lg shadow-emerald-200 transition text-sm flex items-center justify-center gap-1.5">
+              <span>Submit</span>
+              <i class="fa-solid fa-check"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- VIEW 6: CERTIFICATE VIEW (ISOLATED FULL-PAGE, ZERO UNDERNEATH BLEED) -->
+    <section id="viewCertificate" class="hidden my-4">
+      <div class="no-print max-w-4xl mx-auto mb-4 flex items-center justify-between">
+        <button onclick="App.showDashboard()" class="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl transition shadow-sm flex items-center gap-2">
+          <i class="fa-solid fa-arrow-left"></i> Return to Dashboard
+        </button>
+        <button onclick="window.print()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs rounded-xl shadow-lg shadow-indigo-200 transition flex items-center gap-2">
+          <i class="fa-solid fa-print"></i> Print / Save Certificate PDF
+        </button>
+      </div>
+
+      <!-- EXACT A4 LANDSCAPE FRAME -->
+      <div class="max-w-4xl mx-auto bg-amber-50/40 p-4 sm:p-6 rounded-3xl border border-amber-200/60 shadow-2xl">
+        <div id="printableCertificateCard" class="bg-[#fffdfa] border-8 border-double border-amber-800 rounded-2xl p-6 sm:p-10 relative flex flex-col justify-between min-h-[580px] shadow-inner text-center">
+          
+          <!-- Watermark Emblem -->
+          <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-5">
+            <span class="text-[180px] font-black text-amber-900">PUMS</span>
+          </div>
+
+          <!-- Certificate Header -->
+          <div class="relative z-10">
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-wider cert-heading">
+              PANCHAYAT UNION MIDDLE SCHOOL
+            </h1>
+            <h2 class="text-lg sm:text-xl font-bold text-indigo-900 tracking-wide">
+              SIKKARAYAPURAM, KUNDRATHUR BLOCK
+            </h2>
+            <p class="text-xs text-slate-500 font-semibold">Kancheepuram District, Tamil Nadu</p>
+            
+            <div class="w-48 h-0.5 bg-gradient-to-r from-transparent via-amber-700 to-transparent mx-auto my-3"></div>
+
+            <h3 id="certDynamicTitle" class="text-lg sm:text-xl font-black text-amber-900 cert-heading uppercase tracking-wide">
+              CERTIFICATE OF MASTERY
+            </h3>
+          </div>
+
+          <!-- Body Presentation -->
+          <div class="my-4 relative z-10">
+            <p class="text-xs text-slate-600 italic">This is proudly presented to certify that</p>
+            <h2 id="certRecipientName" class="text-3xl sm:text-4xl font-black text-slate-900 my-2 heading-font text-indigo-950 underline decoration-amber-400 decoration-wavy underline-offset-8">
+              STUDENT NAME
+            </h2>
+            <p id="certRecipientClassMeta" class="text-xs sm:text-sm font-bold text-slate-700 mt-3">
+              Standard 6 - Section B • PUMS SIKKARAYAPURAM
+            </p>
+            <p class="max-w-2xl mx-auto text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed">
+              has demonstrated outstanding academic excellence, mathematical speed, and complete conceptual mastery in 
+              <span id="certTopicSpan" class="font-bold text-amber-950 underline">Addition of Integers</span>, 
+              meeting all required competency indicators.
+            </p>
+          </div>
+
+          <!-- Signatory & Verification Footer -->
+          <div class="pt-4 border-t border-amber-200 relative z-10 flex flex-col sm:flex-row items-center justify-between text-left gap-4">
+            <div>
+              <p class="text-[10px] text-slate-400 font-mono">Date of Issue: <span id="certIssueDate">2026-10-20</span></p>
+              <p class="text-[10px] text-slate-400 font-mono">Certificate ID: <span id="certSerialCode">PUMS-MTH-0001</span></p>
+              <div class="mt-1 inline-flex items-center gap-1.5 px-2 py-0.5 bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-bold rounded">
+                <i class="fa-solid fa-shield-check"></i> Officially Verified
+              </div>
+            </div>
+
+            <!-- Authentic Official Teacher Signatory Block -->
+            <div class="text-right sm:text-right">
+              <p class="text-[11px] font-extrabold uppercase tracking-wider text-slate-500">ISSUED BY:</p>
+              <p class="signature-font text-2xl text-slate-900 leading-none my-1">Ananthapadmanabhan R</p>
+              <p class="text-xs font-black text-slate-900">ANANTHAPADMANABHAN R</p>
+              <p class="text-[11px] font-semibold text-slate-600">(BT Asst - Maths)</p>
+              <p class="text-[10px] font-bold text-indigo-900">PUMS SIKKARAYAPURAM</p>
+              <p class="text-[9px] text-slate-500">Kundrathur block, Kancheepuram district</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- STEP 0: REGISTRATION / ADD SIBLING MODAL (STARTS EMPTY - ZERO PREFILLED NAMES) -->
+  <div id="registrationModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-sm no-print">
+    <div class="glass-card bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full border border-white/80 shadow-2xl relative">
+      <div class="text-center mb-6">
+        <div class="w-14 h-14 rounded-2xl bg-indigo-600 text-white flex items-center justify-center mx-auto text-2xl shadow-lg shadow-indigo-200 mb-3">
+          <i class="fa-solid fa-user-graduate"></i>
+        </div>
+        <h3 id="regModalTitle" class="text-xl sm:text-2xl font-black text-slate-900 heading-font">Student Registration</h3>
+        <p class="text-xs text-slate-500 mt-1 tamil-font">மாணவர் சேர்க்கை படிவம் (PUMS Sikkarayapuram Portal)</p>
+      </div>
+
+      <form id="registrationForm" onsubmit="App.handleRegistration(event)" class="space-y-4">
+        <!-- Student Full Name (EMPTY) -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Student Full Name *</label>
+          <input 
+            id="regFullName" 
+            type="text" 
+            required 
+            placeholder="e.g. K. Praveen Kumar" 
+            class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-600 focus:outline-none focus:ring-4 focus:ring-indigo-100 text-sm font-semibold text-slate-800 transition"
+          />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <!-- Class Selection (Class 1 to Class 8) -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Class / வகுப்பு *</label>
+            <select 
+              id="regClassNumber" 
+              required
+              class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-600 focus:outline-none focus:ring-4 focus:ring-indigo-100 text-sm font-semibold text-slate-800 transition"
+            >
+              <option value="" disabled selected>Select Class</option>
+              <option value="1">Class 1 (வகுப்பு 1)</option>
+              <option value="2">Class 2 (வகுப்பு 2)</option>
+              <option value="3">Class 3 (வகுப்பு 3)</option>
+              <option value="4">Class 4 (வகுப்பு 4)</option>
+              <option value="5">Class 5 (வகுப்பு 5)</option>
+              <option value="6">Class 6 (வகுப்பு 6)</option>
+              <option value="7">Class 7 (வகுப்பு 7)</option>
+              <option value="8">Class 8 (வகுப்பு 8)</option>
+            </select>
+          </div>
+
+          <!-- Section Selection -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Section / பிரிவு *</label>
+            <select 
+              id="regSectionLetter" 
+              required
+              class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-600 focus:outline-none focus:ring-4 focus:ring-indigo-100 text-sm font-semibold text-slate-800 transition"
+            >
+              <option value="A">Section A</option>
+              <option value="B">Section B</option>
+              <option value="C">Section C</option>
+              <option value="D">Section D</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- School Name (Defaults to PUMS SIKKARAYAPURAM) -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">School Name / பள்ளிப் பெயர் *</label>
+          <input 
+            id="regSchoolName" 
+            type="text" 
+            required 
+            value="PUMS SIKKARAYAPURAM" 
+            class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-600 focus:outline-none focus:ring-4 focus:ring-indigo-100 text-sm font-semibold text-slate-800 transition bg-slate-50"
+          />
+        </div>
+
+        <div class="pt-2 flex items-center gap-3">
+          <button 
+            type="button" 
+            id="regCancelBtn" 
+            onclick="App.closeRegistrationModal()" 
+            class="hidden w-1/3 py-3 border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl transition"
+          >
+            Cancel
+          </button>
+          <button 
+            type="submit" 
+            class="flex-1 py-3.5 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-black text-sm rounded-xl shadow-lg shadow-indigo-200 transition"
+          >
+            Save & Continue (சேமித்து தொடர்க)
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- STEALTH DEVELOPER & TEACHER INSPECTOR MODAL -->
+  <div id="stealthInspectorModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md no-print">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-3xl w-full border border-slate-200 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 bg-amber-100 text-amber-800 rounded font-black text-[10px] tracking-wider uppercase">Teacher & Admin</span>
+            <h3 class="text-lg font-black text-slate-900 heading-font">Student Roster & Progress Inspector</h3>
+          </div>
+          <p class="text-xs text-slate-500">PUMS SIKKARAYAPURAM Class Management Console</p>
+        </div>
+        <button onclick="App.closeInspector()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-xs font-bold transition">
+          ✕
+        </button>
+      </div>
+
+      <!-- Passcode Guard Screen -->
+      <div id="inspectorAuthView" class="py-8 text-center max-w-xs mx-auto space-y-3">
+        <p class="text-xs text-slate-500 font-semibold">Enter Teacher / Developer Passcode:</p>
+        <input 
+          id="inspectorPasscodeInput" 
+          type="password" 
+          placeholder="Enter Passcode..." 
+          class="w-full text-center px-4 py-2.5 rounded-xl border border-slate-300 focus:border-indigo-600 text-sm font-black"
+        />
+        <button onclick="App.verifyInspectorPasscode()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-xl text-xs transition">
+          Unlock Console
+        </button>
+      </div>
+
+      <!-- Unlocked Inspector Data View -->
+      <div id="inspectorDataView" class="hidden py-4 space-y-4">
+        <div class="flex items-center justify-between">
+          <p class="text-xs font-bold text-slate-600">Registered Students / Siblings on this Machine:</p>
+          <div class="flex gap-2 flex-wrap"><button onclick="App.openCloudLeaderboard()" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl transition">☁️ Live Board</button><button onclick="App.printImpactReport()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition">📄 Impact Report</button><button onclick="App.exportRosterCSV()" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition flex items-center gap-1.5">
+            <i class="fa-solid fa-file-excel"></i> Export CSV
+          </button></div>
+        </div>
+
+        <div class="border border-slate-200 rounded-2xl overflow-hidden">
+          <table class="w-full text-left text-xs text-slate-700">
+            <thead class="bg-slate-50 border-b border-slate-200 text-[10px] font-black uppercase text-slate-500 tracking-wider">
+              <tr>
+                <th class="p-3">Student Name</th>
+                <th class="p-3">Class & Sec</th>
+                <th class="p-3">Core Pts</th>
+                <th class="p-3">Lifestyle Pts</th>
+                <th class="p-3">Certs</th>
+                <th class="p-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="inspectorTableBody" class="divide-y divide-slate-100">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPLICATION LOGIC ENGINE -->
+  <script>
+    // --- SYNTHESIZED WEB AUDIO (No external sound files required) ---
+    const SoundFX = {
+      ctx: null,
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) this.ctx = new AudioContext();
+        }
+      },
+      play(type) {
+        try {
+          this.init();
+          if (!this.ctx) return;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          const now = this.ctx.currentTime;
+
+          if (type === 'correct') {
+            osc.frequency.setValueAtTime(523.25, now); // C5
+            osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.15); // G5
+            gain.gain.setValueAtTime(0.2, now);
+            gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+            osc.start(now);
+            osc.stop(now + 0.3);
+          } else if (type === 'wrong') {
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(220, now);
+            osc.frequency.linearRampToValueAtTime(140, now + 0.2);
+            gain.gain.setValueAtTime(0.15, now);
+            gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+            osc.start(now);
+            osc.stop(now + 0.2);
+          } else if (type === 'victory') {
+            // Fanfare sequence
+            [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+              const noteOsc = this.ctx.createOscillator();
+              const noteGain = this.ctx.createGain();
+              noteOsc.connect(noteGain);
+              noteGain.connect(this.ctx.destination);
+              noteOsc.frequency.value = freq;
+              noteGain.gain.setValueAtTime(0.15, now + i * 0.12);
+              noteGain.gain.linearRampToValueAtTime(0.01, now + i * 0.12 + 0.25);
+              noteOsc.start(now + i * 0.12);
+              noteOsc.stop(now + i * 0.12 + 0.25);
+            });
+          }
+        } catch (e) {
+          // Silent fallback for restrictive autoplay policies
+        }
+      }
+    };
+
+    // --- MAIN APP CONTROLLER ---
+    // ---- LIVE CLOUD SYNC (optional) ----
+    // Paste your Firebase web-app config between the braces to turn on the live leaderboard (see FIREBASE_SETUP.md).
+    // While this is null the app works exactly as before, on each device only.
+    const FIREBASE_CONFIG = null;
+
+    const Cloud = {
+      db: null, uid: null, ready: false, list: [], timers: {},
+      load(src) {
+        return new Promise((res, rej) => {
+          const s = document.createElement('script');
+          s.src = src; s.onload = res; s.onerror = rej;
+          document.head.appendChild(s);
+        });
+      },
+      async init() {
+        if (!FIREBASE_CONFIG) return;
+        try {
+          const base = 'https://www.gstatic.com/firebasejs/10.12.2/';
+          await this.load(base + 'firebase-app-compat.js');
+          await this.load(base + 'firebase-auth-compat.js');
+          await this.load(base + 'firebase-firestore-compat.js');
+          firebase.initializeApp(FIREBASE_CONFIG);
+          const cred = await firebase.auth().signInAnonymously();
+          this.uid = cred.user.uid;
+          this.db = firebase.firestore();
+          (App.profiles || []).forEach(pr => this.push(pr));
+          const v = document.getElementById('viewLeaderboard');
+          if (v && !v.classList.contains('hidden')) this.watch();
+        } catch (e) {
+          console.warn('Cloud sync unavailable, working on this device only.', e);
+        }
+      },
+      // Listen only while the leaderboard is open, to stay inside the free daily read quota
+      watch() {
+        if (!this.db || this.unsub) return;
+        this.unsub = this.db.collection('students').orderBy('total', 'desc').limit(100).onSnapshot(snap => {
+          this.list = snap.docs.map(d => d.data());
+          this.ready = true;
+          const v = document.getElementById('viewLeaderboard');
+          if (v && !v.classList.contains('hidden')) App.showLeaderboard(App.lbScope, true);
+        }, () => { this.ready = false; });
+      },
+      unwatch() {
+        if (this.unsub) { this.unsub(); this.unsub = null; }
+      },
+      push(pr) {
+        if (!this.db || !pr) return;
+        clearTimeout(this.timers[pr.id]);
+        this.timers[pr.id] = setTimeout(() => {
+          try {
+            const total = pr.corePoints + pr.lifestylePoints;
+            if (total <= 0) return;
+            this.db.collection('students').doc(String(pr.id)).set({
+              id: String(pr.id), uid: this.uid,
+              name: String(pr.name).trim().split(/\s+/)[0].slice(0, 20),
+              grade: String(pr.grade), section: String(pr.section),
+              core: pr.corePoints, life: pr.lifestylePoints, total,
+              certs: pr.certificates.length, updated: Date.now()
+            }).catch(() => {});
+          } catch (e) { /* stay silent, local data is safe */ }
+        }, 3000);
+      }
+    };
+
+    const App = {
+      lbScope: 'all',
+      storageKey: 'PUMS_MATH_PROFILES_V2',
+      activeProfileIdKey: 'PUMS_ACTIVE_PROFILE_ID_V2',
+      
+      profiles: [],
+      activeProfile: null,
+      
+      currentOperation: 'Addition',
+      currentSubtopic: null,
+      currentProblem: null,
+      streak: 0,
+      stepInLevel: 1,
+      targetSteps: 5,
+      timerSeconds: 0,
+      timerInterval: null,
+      
+      stealthClicks: 0,
+      stealthTimer: null,
+
+      init() {
+        this.loadProfiles();
+        this.setupKeyboardShortcuts();
+        Cloud.init();
+
+        // STRICT REQUIREMENT 1: NO PREDEFINED NAMES
+        // If there are no saved profiles, directly prompt clean registration modal.
+        if (!this.profiles || this.profiles.length === 0) {
+          this.activeProfile = null;
+          this.openFirstRegistrationModal();
+        } else {
+          const activeId = localStorage.getItem(this.activeProfileIdKey);
+          const found = this.profiles.find(p => p.id === activeId);
+          this.activeProfile = found || this.profiles[0];
+          this.renderProfileUI();
+          this.showDashboard();
+        }
+      },
+
+      loadProfiles() {
+        try {
+          const data = localStorage.getItem(this.storageKey);
+          this.profiles = data ? JSON.parse(data) : [];
+        } catch (e) {
+          this.profiles = [];
+        }
+      },
+
+      saveProfiles() {
+        try {
+          localStorage.setItem(this.storageKey, JSON.stringify(this.profiles));
+          if (this.activeProfile) {
+            localStorage.setItem(this.activeProfileIdKey, this.activeProfile.id);
+            Cloud.push(this.activeProfile);
+          }
+        } catch (e) {
+          console.error('Storage error', e);
+        }
+      },
+
+      // --- VIEW ROUTER (Isolates views cleanly) ---
+      hideAllViews() {
+        clearInterval(this.timerInterval);
+        Cloud.unwatch();
+        ['viewDashboard', 'viewOperations', 'viewSubtopics', 'viewArena', 'viewLifestyle', 'viewLeaderboard', 'viewCertificate'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.classList.add('hidden');
+        });
+      },
+
+      showDashboard() {
+        this.hideAllViews();
+        document.getElementById('viewDashboard').classList.remove('hidden');
+        this.renderProfileUI();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      },
+
+      showOperationsMenu() {
+        this.hideAllViews();
+        document.getElementById('viewOperations').classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      },
+
+      showSubtopicsMenu() {
+        this.hideAllViews();
+        document.getElementById('viewSubtopics').classList.remove('hidden');
+        this.renderSubtopics();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      },
+
+      // --- MULTI-ACCOUNT / SIBLING MANAGEMENT ---
+      openFirstRegistrationModal() {
+        this.hideAllViews();
+        document.getElementById('regModalTitle').innerText = 'Student Registration';
+        document.getElementById('regFullName').value = '';
+        document.getElementById('regClassNumber').value = '';
+        document.getElementById('regSectionLetter').value = 'A';
+        document.getElementById('regSchoolName').value = 'PUMS SIKKARAYAPURAM';
+        document.getElementById('regCancelBtn').classList.add('hidden');
+        document.getElementById('registrationModal').classList.remove('hidden');
+      },
+
+      openAddSiblingModal() {
+        document.getElementById('accountDropdownMenu').classList.add('hidden');
+        document.getElementById('regModalTitle').innerText = 'Add Sibling Account (உடன் பிறந்தவர்)';
+        document.getElementById('regFullName').value = '';
+        document.getElementById('regClassNumber').value = '';
+        document.getElementById('regSectionLetter').value = 'A';
+        document.getElementById('regSchoolName').value = this.activeProfile ? this.activeProfile.school : 'PUMS SIKKARAYAPURAM';
+        document.getElementById('regCancelBtn').classList.remove('hidden');
+        document.getElementById('registrationModal').classList.remove('hidden');
+      },
+
+      closeRegistrationModal() {
+        if (this.profiles.length > 0) {
+          document.getElementById('registrationModal').classList.add('hidden');
+        }
+      },
+
+      handleRegistration(event) {
+        event.preventDefault();
+        const fullName = document.getElementById('regFullName').value.trim();
+        const classNum = parseInt(document.getElementById('regClassNumber').value, 10);
+        const section = document.getElementById('regSectionLetter').value;
+        const school = document.getElementById('regSchoolName').value.trim() || 'PUMS SIKKARAYAPURAM';
+
+        if (!fullName || !classNum) return;
+
+        const newStudent = {
+          id: 'STU-' + Date.now(),
+          name: fullName,
+          grade: classNum,
+          section: section,
+          school: school,
+          corePoints: 0,
+          lifestylePoints: 0,
+          certificates: []
+        };
+
+        this.profiles.push(newStudent);
+        this.activeProfile = newStudent;
+        this.saveProfiles();
+
+        document.getElementById('registrationModal').classList.add('hidden');
+        this.renderProfileUI();
+        this.showDashboard();
+      },
+
+      toggleAccountDropdown() {
+        const menu = document.getElementById('accountDropdownMenu');
+        menu.classList.toggle('hidden');
+        if (!menu.classList.contains('hidden')) {
+          this.renderAccountDropdown();
+        }
+      },
+
+      renderAccountDropdown() {
+        const list = document.getElementById('accountProfilesList');
+        document.getElementById('profileCountBadge').innerText = `${this.profiles.length} Profiles`;
+        list.innerHTML = '';
+
+        this.profiles.forEach(p => {
+          const isActive = this.activeProfile && this.activeProfile.id === p.id;
+          const row = document.createElement('div');
+          row.className = `p-3 flex items-center justify-between cursor-pointer transition ${isActive ? 'bg-indigo-50/80 font-black' : 'hover:bg-slate-50'}`;
+          row.onclick = () => {
+            this.switchActiveProfile(p.id);
+            document.getElementById('accountDropdownMenu').classList.add('hidden');
+          };
+          row.innerHTML = `
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-xl ${isActive ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700'} flex items-center justify-center text-xs font-black">
+                ${this.esc(p.name.charAt(0).toUpperCase())}
+              </div>
+              <div>
+                <p class="text-xs text-slate-900 leading-tight">${this.esc(p.name)} ${isActive ? '<span class="text-[10px] text-indigo-600 font-bold">(Active)</span>' : ''}</p>
+                <p class="text-[10px] text-slate-400">Class ${p.grade}-${p.section}</p>
+              </div>
+            </div>
+            <span class="text-xs font-black text-amber-600">${p.corePoints} pts</span>
+          `;
+          list.appendChild(row);
+        });
+      },
+
+      switchActiveProfile(id) {
+        const target = this.profiles.find(p => p.id === id);
+        if (target) {
+          this.activeProfile = target;
+          this.saveProfiles();
+          this.renderProfileUI();
+          this.showDashboard();
+        }
+      },
+
+      renderProfileUI() {
+        if (!this.activeProfile) return;
+        const p = this.activeProfile;
+
+        // Header badge
+        document.getElementById('headerProfileBadge').classList.remove('hidden');
+        document.getElementById('topBarStudentName').innerText = p.name;
+        document.getElementById('topBarStudentMeta').innerText = `Class ${p.grade}-${p.section}`;
+
+        // Dashboard Elements
+        document.getElementById('dashStudentName').innerText = p.name;
+        document.getElementById('dashAvatarInitial').innerText = p.name.charAt(0).toUpperCase();
+        document.getElementById('dashClassPill').innerText = `Class ${p.grade} - Sec ${p.section}`;
+        document.getElementById('dashSchoolNameText').innerText = p.school;
+        document.getElementById('dashHeroClassNum').innerText = p.grade;
+
+        document.getElementById('dashCorePoints').innerText = p.corePoints.toLocaleString();
+        document.getElementById('dashLifestylePoints').innerText = p.lifestylePoints.toLocaleString();
+        document.getElementById('dashCertificatesCount').innerText = p.certificates.length;
+
+        // Render Earned Certificates
+        const certsContainer = document.getElementById('earnedCertificatesList');
+        certsContainer.innerHTML = '';
+        if (p.certificates.length === 0) {
+          certsContainer.innerHTML = `
+            <div class="col-span-full py-6 text-center text-slate-400 text-xs">
+              <i class="fa-solid fa-medal text-slate-300 text-2xl mb-1 block"></i>
+              No certificates earned yet. Complete all 5 steps of any topic to earn your first official certificate!
+            </div>
+          `;
+        } else {
+          p.certificates.forEach((c) => {
+            const card = document.createElement('div');
+            card.className = 'p-3 rounded-2xl border border-amber-200 bg-amber-50/50 flex items-center justify-between';
+            card.innerHTML = `
+              <div>
+                <p class="text-xs font-black text-amber-950">${this.esc(c.topic)}</p>
+                <p class="text-[10px] text-slate-500">${c.date} • ${c.id}</p>
+              </div>
+              <button onclick="App.displayExistingCertificate('${c.id}')" class="px-3 py-1 bg-white border border-amber-300 hover:bg-amber-100 text-amber-800 text-[11px] font-bold rounded-xl transition">
+                View
+              </button>
+            `;
+            certsContainer.appendChild(card);
+          });
+        }
+      },
+
+      // --- CURRICULUM TOPIC GENERATOR (Class 1 to 8) ---
+      selectOperation(op) {
+        this.currentOperation = op;
+        this.showSubtopicsMenu();
+      },
+
+      getSubtopicsForCurrentStudent() {
+        const grade = this.activeProfile ? this.activeProfile.grade : 6;
+        const op = this.currentOperation;
+
+        // GRADE 1 & 2: Foundational single-digit & visual math
+        if (grade <= 2) {
+          if (op === 'Addition') {
+            return [
+              { id: 'single_add', name: 'Single Digit Addition', desc: 'Numbers up to 9 (1+2, 4+3)', icon: '1️⃣' },
+              { id: 'sum_to_20', name: 'Adding within 20', desc: 'Single & double digits (8+5, 12+4)', icon: '🔟' },
+              { id: 'doubles', name: 'Doubles & Near Doubles', desc: 'Twin numbers (3+3, 5+5, 4+5)', icon: '👯' }
+            ];
+          } else if (op === 'Subtraction') {
+            return [
+              { id: 'single_sub', name: 'Single Digit Subtraction', desc: 'Take away from 9 (7-3, 9-5)', icon: '1️⃣' },
+              { id: 'sub_within_20', name: 'Subtraction within 20', desc: 'Numbers up to 20 (15-6, 18-9)', icon: '🎯' },
+              { id: 'zero_sub', name: 'Subtracting Zero & Self', desc: 'Rules of 0 (5-0, 8-8)', icon: '⭕' }
+            ];
+          } else if (op === 'Multiplication') {
+            return [
+              { id: 'table_2', name: 'Table of 2 (Skip Counting)', desc: 'Twos pairs (2×3, 2×6)', icon: '✌️' },
+              { id: 'table_5', name: 'Table of 5 (Five Fingers)', desc: 'Counting by fives (5×2, 5×4)', icon: '🖐️' },
+              { id: 'table_10', name: 'Table of 10 (Tens)', desc: 'Easy multiples of 10 (10×3, 10×7)', icon: '🔟' }
+            ];
+          } else {
+            return [
+              { id: 'sharing_2', name: 'Sharing Between 2 Friends', desc: 'Halves (4÷2, 8÷2, 10÷2)', icon: '👫' },
+              { id: 'sharing_5', name: 'Sharing Among 5', desc: 'Simple division (10÷5, 15÷5)', icon: '🖐️' }
+            ];
+          }
+        }
+
+        // GRADE 3 TO 5: Primary arithmetic, tables, 2-3 digits, simple fractions
+        if (grade >= 3 && grade <= 5) {
+          if (op === 'Addition') {
+            return [
+              { id: 'add_2digit', name: '2-Digit Addition', desc: 'Numbers up to 99 with carrying (28+47)', icon: '🔢' },
+              { id: 'add_3digit', name: '3-Digit Addition', desc: 'Hundreds & Tens (342 + 259)', icon: '💯' },
+              { id: 'add_simple_frac', name: 'Like Fractions', desc: 'Same denominator (1/4 + 2/4)', icon: '🍰' }
+            ];
+          } else if (op === 'Subtraction') {
+            return [
+              { id: 'sub_2digit', name: '2-Digit Subtraction', desc: 'Borrowing from tens (62 - 38)', icon: '✂️' },
+              { id: 'sub_3digit', name: '3-Digit Subtraction', desc: 'Subtracting hundreds (500 - 245)', icon: '🏦' },
+              { id: 'sub_simple_frac', name: 'Fraction Subtraction', desc: 'Like denominators (3/5 - 1/5)', icon: '🥧' }
+            ];
+          } else if (op === 'Multiplication') {
+            return [
+              { id: 'tables_3_to_9', name: 'Multiplication Tables (3 to 9)', desc: 'Core tables (7×8, 6×9, 4×7)', icon: '✖️' },
+              { id: 'mul_2digit_1digit', name: '2-Digit × 1-Digit', desc: 'Expanding (24 × 3, 35 × 4)', icon: '📈' },
+              { id: 'mul_tens', name: 'Multiplication by 10, 100', desc: 'Zero annexing (45 × 10, 12 × 100)', icon: '⚡' }
+            ];
+          } else {
+            return [
+              { id: 'div_tables', name: 'Table Division', desc: 'Exact divisions (42÷6, 56÷8)', icon: '➗' },
+              { id: 'div_with_rem', name: 'Quotient & Remainder', desc: 'Simple remainders (17÷4, 25÷3)', icon: '📦' },
+              { id: 'div_2digit', name: '2-Digit by 1-Digit', desc: 'Long division steps (84÷4, 96÷3)', icon: '📐' }
+            ];
+          }
+        }
+
+        // GRADE 6 TO 8: Tamil Nadu Middle School Syllabus (Integers, Decimals, Fractions, Ratios)
+        if (op === 'Addition') {
+          return [
+            { id: 'integers_add', name: 'Integers Addition', desc: 'Positive and negative integers ((-8) + 15)', icon: '➕➖' },
+            { id: 'decimals_add', name: 'Decimal Addition', desc: 'Aligning decimal points (4.25 + 3.8)', icon: '🎯' },
+            { id: 'fractions_add', name: 'Fractions Addition', desc: 'Unlike denominators (2/3 + 3/4)', icon: '🧩' }
+          ];
+        } else if (op === 'Subtraction') {
+          return [
+            { id: 'integers_sub', name: 'Integers Subtraction', desc: 'Directed numbers ((-5) - (-12))', icon: '❄️' },
+            { id: 'decimals_sub', name: 'Decimal Subtraction', desc: 'Borrowing with decimals (8.5 - 2.75)', icon: '📏' },
+            { id: 'fractions_sub', name: 'Fractions Subtraction', desc: 'Subtracting fractions (5/6 - 1/3)', icon: '🍰' }
+          ];
+        } else if (op === 'Multiplication') {
+          return [
+            { id: 'integers_mul', name: 'Integers Multiplication', desc: 'Sign rules ((-6) × (-7), (-4) × 8)', icon: '⚡' },
+            { id: 'decimals_mul', name: 'Decimal Multiplication', desc: 'Multiplying decimals (1.2 × 0.4)', icon: '🎯' },
+            { id: 'fractions_mul', name: 'Fractions Multiplication', desc: 'Multiplying numerator & denominator (2/5 × 3/7)', icon: '✖️' }
+          ];
+        } else {
+          return [
+            { id: 'integers_div', name: 'Integers Division', desc: 'Quotient with signed integers ((-48) ÷ 6)', icon: '➗' },
+            { id: 'decimals_div', name: 'Decimal Division', desc: 'Decimals by whole numbers (7.2 ÷ 3)', icon: '📐' },
+            { id: 'fractions_div', name: 'Fractions Division', desc: 'Reciprocal multiplication (3/4 ÷ 2/5)', icon: '🔄' }
+          ];
+        }
+      },
+
+      renderSubtopics() {
+        const subContainer = document.getElementById('subtopicsContainer');
+        const badge = document.getElementById('subtopicOperationBadge');
+        const title = document.getElementById('subtopicsTitle');
+        const gradeNotice = document.getElementById('subtopicsGradeNotice');
+
+        badge.innerText = this.currentOperation;
+        title.innerText = `${this.currentOperation} Topics`;
+        gradeNotice.innerText = `Tailored for Class ${this.activeProfile ? this.activeProfile.grade : 1} TN Syllabus`;
+        subContainer.innerHTML = '';
+
+        const topics = this.getSubtopicsForCurrentStudent();
+        topics.forEach(t => {
+          const card = document.createElement('button');
+          card.onclick = () => this.startArena(t);
+          card.className = 'glass-card hover:bg-white border-2 border-indigo-100 hover:border-indigo-600 rounded-3xl p-6 text-left transition transform hover:-translate-y-1 shadow-sm flex flex-col justify-between h-48';
+          card.innerHTML = `
+            <div class="text-3xl">${t.icon}</div>
+            <div>
+              <h4 class="text-lg font-black text-slate-900">${t.name}</h4>
+              <p class="text-xs text-slate-500 mt-1 font-medium">${t.desc}</p>
+            </div>
+            <div class="flex items-center gap-1 text-xs font-bold text-indigo-600">
+              <span>Start Topic</span>
+              <i class="fa-solid fa-angle-right text-[10px]"></i>
+            </div>
+          `;
+          subContainer.appendChild(card);
+        });
+      },
+
+      // --- QUESTION ARENA GENERATOR ---
+      startArena(topic) {
+        this.currentSubtopic = topic;
+        this.stepInLevel = 1;
+        this.streak = 0;
+        this.timerSeconds = 0;
+
+        this.hideAllViews();
+        document.getElementById('viewArena').classList.remove('hidden');
+
+        clearInterval(this.timerInterval);
+        this.timerInterval = setInterval(() => {
+          this.timerSeconds++;
+          document.getElementById('arenaTimer').innerText = `${this.timerSeconds}s`;
+        }, 1000);
+
+        this.generateNextProblem();
+      },
+
+      generateNextProblem() {
+        const topicId = this.currentSubtopic.id;
+        const step = this.stepInLevel;
+
+        document.getElementById('arenaStreakCount').innerText = this.streak;
+        document.getElementById('arenaLevelProgressText').innerText = `Step ${step} of ${this.targetSteps}`;
+        document.getElementById('arenaProgressBar').style.width = `${(step / this.targetSteps) * 100}%`;
+        document.getElementById('arenaLevelPill').innerText = `Step ${step}: ${step === 1 ? 'Foundational Level 0' : 'Advancing Level ' + (step - 1)}`;
+
+        // Procedural generator strictly respecting the chosen operation & topic
+        let p = { equation: '', answer: 0, hint: '' };
+        const r = (lo, hi) => Math.floor(Math.random() * (hi - lo + 1)) + lo;
+
+        if (topicId === 'single_add') {
+          const a = Math.floor(Math.random() * 5) + 1;
+          const b = Math.floor(Math.random() * 4) + 1;
+          p.equation = `${a} + ${b} = ?`;
+          p.answer = a + b;
+          p.hint = 'Count total objects together';
+        } else if (topicId === 'sum_to_20') {
+          const a = Math.floor(Math.random() * 9) + 5;
+          const b = Math.floor(Math.random() * 7) + 2;
+          p.equation = `${a} + ${b} = ?`;
+          p.answer = a + b;
+        } else if (topicId === 'single_sub') {
+          const a = Math.floor(Math.random() * 6) + 4;
+          const b = Math.floor(Math.random() * a) + 1;
+          p.equation = `${a} − ${b} = ?`;
+          p.answer = a - b;
+        } else if (topicId === 'table_2') {
+          const a = Math.floor(Math.random() * 8) + 1;
+          p.equation = `2 × ${a} = ?`;
+          p.answer = 2 * a;
+        } else if (topicId === 'table_5') {
+          const a = Math.floor(Math.random() * 8) + 1;
+          p.equation = `5 × ${a} = ?`;
+          p.answer = 5 * a;
+        } else if (topicId === 'sharing_2') {
+          const half = Math.floor(Math.random() * 7) + 1;
+          p.equation = `${half * 2} ÷ 2 = ?`;
+          p.answer = half;
+        } else if (topicId === 'integers_add') {
+          const a = (Math.random() > 0.5 ? 1 : -1) * (Math.floor(Math.random() * 12) + 2);
+          const b = (Math.random() > 0.5 ? 1 : -1) * (Math.floor(Math.random() * 12) + 2);
+          p.equation = `(${a}) + (${b}) = ?`;
+          p.answer = a + b;
+        } else if (topicId === 'integers_sub') {
+          const a = (Math.random() > 0.5 ? 1 : -1) * (Math.floor(Math.random() * 12) + 2);
+          const b = (Math.random() > 0.5 ? 1 : -1) * (Math.floor(Math.random() * 12) + 2);
+          p.equation = `(${a}) − (${b}) = ?`;
+          p.answer = a - b;
+        } else if (topicId === 'integers_mul') {
+          const a = (Math.random() > 0.5 ? 1 : -1) * (Math.floor(Math.random() * 9) + 2);
+          const b = (Math.random() > 0.5 ? 1 : -1) * (Math.floor(Math.random() * 9) + 2);
+          p.equation = `(${a}) × (${b}) = ?`;
+          p.answer = a * b;
+        } else if (topicId === 'integers_div') {
+          const divisor = (Math.random() > 0.5 ? 1 : -1) * (Math.floor(Math.random() * 7) + 2);
+          const quotient = (Math.random() > 0.5 ? 1 : -1) * (Math.floor(Math.random() * 8) + 2);
+          const dividend = divisor * quotient;
+          p.equation = `(${dividend}) ÷ (${divisor}) = ?`;
+          p.answer = quotient;
+        } else if (topicId === 'decimals_add') {
+          const a = (Math.floor(Math.random() * 40) + 10) / 10;
+          const b = (Math.floor(Math.random() * 30) + 10) / 10;
+          p.equation = `${a.toFixed(1)} + ${b.toFixed(1)} = ?`;
+          p.answer = +(a + b).toFixed(1);
+        } else if (this.genBasic(topicId, r, p)) {
+          // problem filled in by genBasic
+        } else if (topicId === 'decimals_sub') {
+          const a = r(500, 999) / 100;
+          const b = r(100, Math.round(a * 100) - 50) / 100;
+          p.equation = `${a.toFixed(2)} − ${b.toFixed(2)} = ?`;
+          p.answer = +(a - b).toFixed(2);
+          p.tol = 0.001;
+          p.hint = 'Line up the decimal points, then subtract';
+        } else if (topicId === 'decimals_mul') {
+          const a = r(11, 59) / 10;
+          const b = r(2, 9) / 10;
+          p.equation = `${a.toFixed(1)} × ${b.toFixed(1)} = ?`;
+          p.answer = +(a * b).toFixed(2);
+          p.tol = 0.001;
+          p.hint = 'Multiply as whole numbers, then place the decimal point';
+        } else if (topicId === 'decimals_div') {
+          const d = r(2, 9);
+          const q = r(11, 99) / 10;
+          p.equation = `${(d * q).toFixed(1)} ÷ ${d} = ?`;
+          p.answer = q;
+          p.tol = 0.001;
+          p.hint = 'Divide as usual and keep the decimal point in place';
+        } else if (topicId === 'add_simple_frac' || topicId === 'sub_simple_frac') {
+          const d = [4, 5, 6, 8, 10][r(0, 4)];
+          if (topicId === 'add_simple_frac') {
+            const n1 = r(1, d - 2);
+            const n2 = r(1, d - 1 - n1);
+            p.equation = `${n1}/${d} + ${n2}/${d} = ?`;
+            this.setFraction(p, n1 + n2, d);
+          } else {
+            const n1 = r(2, d - 1);
+            const n2 = r(1, n1 - 1);
+            p.equation = `${n1}/${d} − ${n2}/${d} = ?`;
+            this.setFraction(p, n1 - n2, d);
+          }
+          p.hint = 'Same denominator: work with the tops. Answer as a fraction like 3/4';
+        } else if (topicId.startsWith('fractions_')) {
+          const makeFrac = (excl) => { let d; do { d = r(2, 9); } while (d === excl); return [r(1, d - 1), d]; };
+          const same = topicId === 'fractions_mul' || topicId === 'fractions_div';
+          let [n1, d1] = makeFrac(0);
+          let [n2, d2] = makeFrac(same ? 0 : d1);
+          if (topicId === 'fractions_sub') {
+            while (n1 * d2 === n2 * d1) { [n2, d2] = makeFrac(d1); }
+            if (n1 * d2 < n2 * d1) { [n1, d1, n2, d2] = [n2, d2, n1, d1]; }
+          }
+          if (topicId === 'fractions_add') {
+            p.equation = `${n1}/${d1} + ${n2}/${d2} = ?`;
+            this.setFraction(p, n1 * d2 + n2 * d1, d1 * d2);
+            p.hint = 'Make the denominators equal first. Answer as a fraction like 17/12';
+          } else if (topicId === 'fractions_sub') {
+            p.equation = `${n1}/${d1} − ${n2}/${d2} = ?`;
+            this.setFraction(p, n1 * d2 - n2 * d1, d1 * d2);
+            p.hint = 'Make the denominators equal first. Answer as a fraction like 5/12';
+          } else if (topicId === 'fractions_mul') {
+            p.equation = `${n1}/${d1} × ${n2}/${d2} = ?`;
+            this.setFraction(p, n1 * n2, d1 * d2);
+            p.hint = 'Tops × tops, bottoms × bottoms. Answer as a fraction like 6/35';
+          } else {
+            p.equation = `${n1}/${d1} ÷ ${n2}/${d2} = ?`;
+            this.setFraction(p, n1 * d2, d1 * n2);
+            p.hint = 'Flip the second fraction and multiply. Answer as a fraction like 15/8';
+          }
+        } else {
+          // General fallback procedural problem
+          const a = Math.floor(Math.random() * 8) + 2;
+          const b = Math.floor(Math.random() * 8) + 2;
+          if (this.currentOperation === 'Addition') {
+            p.equation = `${a * 10} + ${b * 10} = ?`;
+            p.answer = (a * 10) + (b * 10);
+          } else if (this.currentOperation === 'Subtraction') {
+            p.equation = `${(a + b) * 5} − ${b * 5} = ?`;
+            p.answer = a * 5;
+          } else if (this.currentOperation === 'Multiplication') {
+            p.equation = `${a} × ${b} = ?`;
+            p.answer = a * b;
+          } else {
+            p.equation = `${a * b} ÷ ${a} = ?`;
+            p.answer = b;
+          }
+        }
+
+        this.currentProblem = p;
+        document.getElementById('arenaProblemEquation').innerText = p.equation;
+        document.getElementById('arenaContextHint').innerText = p.hint || '';
+        document.getElementById('arenaAnswerInput').value = '';
+        document.getElementById('arenaFeedback').classList.add('hidden');
+        this.answerLocked = false;
+        document.getElementById('arenaAnswerInput').focus();
+      },
+
+      genBasic(id, r, p) {
+        const pick = (arr) => arr[r(0, arr.length - 1)];
+        let a, b, d, q;
+        switch (id) {
+          case 'doubles':
+            a = r(1, 10);
+            if (Math.random() < 0.5) { p.equation = `${a} + ${a} = ?`; p.answer = a * 2; p.hint = 'A double: the same number twice'; }
+            else { p.equation = `${a} + ${a + 1} = ?`; p.answer = a * 2 + 1; p.hint = 'Near double: double plus one'; }
+            return true;
+          case 'sub_within_20':
+            a = r(10, 20); b = r(1, 9);
+            p.equation = `${a} − ${b} = ?`; p.answer = a - b; return true;
+          case 'zero_sub':
+            a = r(1, 20);
+            if (Math.random() < 0.5) { p.equation = `${a} − 0 = ?`; p.answer = a; p.hint = 'Taking away nothing'; }
+            else { p.equation = `${a} − ${a} = ?`; p.answer = 0; p.hint = 'Taking away everything'; }
+            return true;
+          case 'table_10':
+            a = r(1, 10); p.equation = `10 × ${a} = ?`; p.answer = 10 * a; return true;
+          case 'sharing_5':
+            q = r(1, 9); p.equation = `${q * 5} ÷ 5 = ?`; p.answer = q; return true;
+          case 'add_2digit':
+            a = r(25, 89); b = r(15, 89);
+            p.equation = `${a} + ${b} = ?`; p.answer = a + b; p.hint = 'Add the ones first, then the tens'; return true;
+          case 'add_3digit':
+            a = r(100, 699); b = r(100, 699);
+            p.equation = `${a} + ${b} = ?`; p.answer = a + b; p.hint = 'Ones, then tens, then hundreds'; return true;
+          case 'sub_2digit':
+            a = r(40, 99); b = r(11, a - 10);
+            p.equation = `${a} − ${b} = ?`; p.answer = a - b; p.hint = 'Borrow from the tens if needed'; return true;
+          case 'sub_3digit':
+            a = r(300, 999); b = r(100, a - 50);
+            p.equation = `${a} − ${b} = ?`; p.answer = a - b; return true;
+          case 'tables_3_to_9':
+            a = r(3, 9); b = r(2, 9);
+            p.equation = `${a} × ${b} = ?`; p.answer = a * b; return true;
+          case 'mul_2digit_1digit':
+            a = r(12, 49); b = r(2, 9);
+            p.equation = `${a} × ${b} = ?`; p.answer = a * b; p.hint = 'Multiply the ones, then the tens'; return true;
+          case 'mul_tens':
+            a = r(11, 99); b = pick([10, 100]);
+            p.equation = `${a} × ${b} = ?`; p.answer = a * b; p.hint = `Add ${b === 10 ? 'one zero' : 'two zeros'}`; return true;
+          case 'div_tables':
+            d = r(2, 9); q = r(2, 9);
+            p.equation = `${d * q} ÷ ${d} = ?`; p.answer = q; return true;
+          case 'div_with_rem':
+            d = r(3, 9); q = r(2, 9); const rem = r(1, d - 1); a = d * q + rem;
+            if (Math.random() < 0.5) { p.equation = `${a} ÷ ${d}: Quotient = ?`; p.answer = q; }
+            else { p.equation = `${a} ÷ ${d}: Remainder = ?`; p.answer = rem; }
+            p.hint = `How many ${d}s fit in ${a}, and what is left over?`; return true;
+          case 'div_2digit':
+            d = r(2, 9); q = r(10, Math.floor(99 / d));
+            p.equation = `${d * q} ÷ ${d} = ?`; p.answer = q; p.hint = 'Divide the tens first, then the ones'; return true;
+        }
+        return false;
+      },
+
+      localDate() {
+        const n = new Date();
+        return `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, '0')}-${String(n.getDate()).padStart(2, '0')}`;
+      },
+
+      esc(s) {
+        return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+      },
+
+      gcd(a, b) { return b === 0 ? a : this.gcd(b, a % b); },
+
+      setFraction(p, n, d) {
+        const g = this.gcd(Math.abs(n), Math.abs(d)) || 1;
+        n /= g; d /= g;
+        p.answer = n / d;
+        p.answerText = d === 1 ? `${n}` : `${n}/${d}`;
+        p.tol = 1e-6;
+      },
+
+      parseAnswer(raw) {
+        const s = raw.replace(/\s+/g, '').replace('−', '-');
+        if (s.includes('/')) {
+          const parts = s.split('/');
+          if (parts.length !== 2) return NaN;
+          const n = parseFloat(parts[0]), d = parseFloat(parts[1]);
+          return (isFinite(n) && isFinite(d) && d !== 0) ? n / d : NaN;
+        }
+        return parseFloat(s);
+      },
+
+      keypadPress(char) {
+        const input = document.getElementById('arenaAnswerInput');
+        input.value += char;
+      },
+
+      keypadBackspace() {
+        const input = document.getElementById('arenaAnswerInput');
+        input.value = input.value.slice(0, -1);
+      },
+
+      handleAnswerSubmit(e) {
+        e.preventDefault();
+        const raw = document.getElementById('arenaAnswerInput').value.trim();
+        if (!raw || this.answerLocked) return;
+        this.answerLocked = true;
+
+        const val = this.parseAnswer(raw);
+        const fb = document.getElementById('arenaFeedback');
+
+        if (Math.abs(val - this.currentProblem.answer) < (this.currentProblem.tol || 0.01)) {
+          // CORRECT ANSWER
+          SoundFX.play('correct');
+          this.streak++;
+          this.activeProfile.corePoints += 20;
+
+          fb.innerText = 'Correct! அருமை, சரியான விடை!';
+          fb.className = 'mb-4 p-3 rounded-2xl text-xs font-bold bg-emerald-100 text-emerald-800 block';
+
+          if (this.stepInLevel >= this.targetSteps) {
+            // TOPIC CONQUERED -> AWARD DYNAMIC CERTIFICATE
+            setTimeout(() => {
+              this.awardCertificate();
+            }, 600);
+          } else {
+            this.stepInLevel++;
+            setTimeout(() => {
+              this.generateNextProblem();
+            }, 700);
+          }
+        } else {
+          // WRONG ANSWER
+          SoundFX.play('wrong');
+          this.streak = 0;
+          fb.innerText = `Incorrect. The correct answer was ${this.currentProblem.answerText || this.currentProblem.answer}. Try the next one!`;
+          fb.className = 'mb-4 p-3 rounded-2xl text-xs font-bold bg-rose-100 text-rose-800 block';
+          
+          setTimeout(() => {
+            this.generateNextProblem();
+          }, 1400);
+        }
+
+        this.saveProfiles();
+        document.getElementById('arenaStreakCount').innerText = this.streak;
+      },
+
+      exitArenaPrompt() {
+        clearInterval(this.timerInterval);
+        this.showSubtopicsMenu();
+      },
+
+      // --- DYNAMIC CERTIFICATES ---
+      awardCertificate() {
+        clearInterval(this.timerInterval);
+        SoundFX.play('victory');
+
+        if (window.confetti) {
+          window.confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+        }
+
+        const dateStr = this.localDate();
+        const certId = 'PUMS-' + Math.floor(100000 + Math.random() * 900000);
+        const dynamicTitle = `CERTIFICATE OF MASTERY IN ${this.currentOperation.toUpperCase()} OF ${this.currentSubtopic.name.toUpperCase()}`;
+
+        const certObj = {
+          id: certId,
+          topic: `${this.currentOperation} - ${this.currentSubtopic.name}`,
+          fullTitle: dynamicTitle,
+          date: dateStr,
+          grade: this.activeProfile.grade,
+          section: this.activeProfile.section
+        };
+
+        this.activeProfile.certificates.push(certObj);
+        this.activeProfile.corePoints += 100;
+        this.saveProfiles();
+
+        this.renderCertificateView(certObj);
+      },
+
+      displayExistingCertificate(certId) {
+        const cert = this.activeProfile.certificates.find(c => c.id === certId);
+        if (cert) {
+          this.renderCertificateView(cert);
+        }
+      },
+
+      renderCertificateView(cert) {
+        this.hideAllViews();
+        document.getElementById('viewCertificate').classList.remove('hidden');
+
+        document.getElementById('certDynamicTitle').innerText = cert.fullTitle || `CERTIFICATE OF MASTERY IN ${cert.topic.toUpperCase()}`;
+        document.getElementById('certRecipientName').innerText = this.activeProfile.name.toUpperCase();
+        document.getElementById('certRecipientClassMeta').innerText = `Class ${this.activeProfile.grade} - Section ${this.activeProfile.section} • ${this.activeProfile.school}`;
+        document.getElementById('certTopicSpan').innerText = cert.topic;
+        document.getElementById('certIssueDate').innerText = cert.date;
+        document.getElementById('certSerialCode').innerText = cert.id;
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      },
+
+      // --- LIFESTYLE MATHS MODULE ---
+      showLifestyleArena() {
+        this.hideAllViews();
+        document.getElementById('viewLifestyle').classList.remove('hidden');
+        document.getElementById('lifestyleCurrentScore').innerText = this.activeProfile.lifestylePoints;
+        this.generateLifestyleProblem();
+      },
+
+      generateLifestyleProblem() {
+        const r = (lo, hi) => Math.floor(Math.random() * (hi - lo + 1)) + lo;
+        const pick = (arr) => arr[r(0, arr.length - 1)];
+        const nextNote = (t) => [50, 100, 200, 500].find(n => n > t);
+        const f = pick(['Kavitha', 'Meena', 'Priya', 'Lakshmi']);
+        const m = pick(['Ravi', 'Arun', 'Karthik', 'Dhanush']);
+
+        const templates = [
+          () => { const a = r(1, 4), p = r(20, 45), b = r(1, 3), q = r(25, 45), t = a * p + b * q, note = nextNote(t);
+            return { title: 'Shandy Market Groceries (சந்தைக் காய்கறிகள்)', answer: note - t,
+              prompt: `${f} buys ${a} kg of tomatoes at ₹${p} per kg and ${b} kg of onions at ₹${q} per kg at the Sikkarayapuram weekly shandy. She pays with a ₹${note} note. How much change (மீதி) should she get back in rupees?` }; },
+          () => { const fare = r(8, 20), n = r(2, 4), t = fare * n, note = nextNote(t);
+            return { title: 'Poonamallee Bus Ticket Fare (பேருந்து கட்டணம்)', answer: note - t,
+              prompt: `Bus fare from Kundrathur to Poonamallee is ₹${fare} per student. ${m} pays for himself and ${n - 1} classmate(s) with a ₹${note} note. How much balance will the conductor return in rupees?` }; },
+          () => { const k = r(3, 10), g = r(2, 18) * 50;
+            return { title: 'Ration Shop Rice (ரேஷன் கடை அரிசி)', answer: k * 1000 - g,
+              prompt: `Amma buys ${k} kg of rice from the Fair Price Shop. The family cooks ${g} grams today. How many grams of rice are left in the bag?` }; },
+          () => { const l = r(6, 15), w = r(3, Math.min(l - 1, 10));
+            return { title: 'School Garden Fence (பள்ளித் தோட்டம்)', answer: 2 * (l + w),
+              prompt: `Students are fencing a rectangular vegetable patch at PUMS Sikkarayapuram. The garden is ${l} meters long and ${w} meters wide. What is the total perimeter (சுற்றளவு) of fence wire needed in meters?` }; },
+          () => { const a = r(3, 9), b = r(2, 8), c = r(2, 6);
+            return { title: 'Piggy Bank Savings (உண்டியல் சேமிப்பு)', answer: 5 * a + 10 * b + 2 * c,
+              prompt: `${m} saved ${a} five-rupee coins, ${b} ten-rupee coins and ${c} two-rupee coins in his clay piggy bank. How much money in rupees did he save?` }; },
+          () => { const p = r(8, 25), n = r(3, 8), q = r(5, 15), k = r(2, 5);
+            return { title: 'Stationery Shop (எழுதுபொருள் கடை)', answer: p * n + q * k,
+              prompt: `At the school stationery shop, ${f} buys ${n} notebooks at ₹${p} each and ${k} pens at ₹${q} each. What is the total bill in rupees?` }; },
+          () => { const p = r(40, 55), l = r(1, 3), d = pick([5, 6, 7]);
+            return { title: 'Milk Packets (பால் செலவு)', answer: p * l * d,
+              prompt: `Amma buys ${l} litre(s) of milk every day at ₹${p} per litre. How much does she spend on milk in ${d} days?` }; },
+          () => { const l = r(5, 12), w = r(4, 9);
+            return { title: 'Classroom Floor (வகுப்பறைத் தரை)', answer: l * w,
+              prompt: `A classroom floor is ${l} meters long and ${w} meters wide. What is its area (பரப்பளவு) in square meters?` }; },
+          () => { const h = r(1, 3), mi = pick([10, 15, 20, 30, 40, 45]);
+            return { title: 'Study Time (படிக்கும் நேரம்)', answer: h * 60 + mi,
+              prompt: `${m} studied maths for ${h} hour(s) and ${mi} minutes in the evening. How many minutes did he study in total?` }; },
+          () => { const s = r(10, 50), w = r(4, 10), sp = 5 * r(1, Math.floor(s * w / 10));
+            return { title: 'Weekly Savings (வாராந்திர சேமிப்பு)', answer: s * w - sp,
+              prompt: `${f} saves ₹${s} every week for ${w} weeks. She then spends ₹${sp} on a school bag. How much money is left with her in rupees?` }; },
+          () => { const n = r(5, 12), k = r(2, 6);
+            return { title: 'Pongal Sweets (பொங்கல் இனிப்பு)', answer: k,
+              prompt: `A box has ${n * k} laddus to be shared equally among ${n} students during the Pongal celebration. How many laddus does each student get?` }; },
+          () => { const price = pick([200, 300, 400, 500, 600, 800]), pct = pick([10, 20, 25, 50]);
+            return { title: 'Festival Discount (தள்ளுபடி)', answer: price * pct / 100,
+              prompt: `A shirt costs ₹${price}. During the festival sale there is a ${pct}% discount. How many rupees will the buyer save?` }; },
+          () => { const d = r(2, 6), s = pick([5, 6, 10]);
+            return { title: 'Cycle to School (சைக்கிள் பயணம்)', answer: 2 * d * s,
+              prompt: `${m} cycles ${d} km to school and ${d} km back home every day. How many kilometres does he cycle in ${s} school days?` }; },
+          () => { const c = pick([20, 25, 30, 40]), u = r(3, 9), v = r(3, 9);
+            return { title: 'Drinking Water Can (குடிநீர் கேன்)', answer: c - u - v,
+              prompt: `A water can holds ${c} litres. The students use ${u} litres in the morning and ${v} litres in the afternoon. How many litres are left?` }; },
+          () => { const n = r(20, 45), fee = r(15, 40);
+            return { title: 'School Trip Fund (சுற்றுலா நிதி)', answer: n * fee,
+              prompt: `${n} students of PUMS Sikkarayapuram join a school trip and each pays ₹${fee}. How much money is collected in total in rupees?` }; }
+        ];
+
+        // Shuffle-bag: every template is used once before any repeats, and never twice in a row
+        if (!this.lifestyleBag || this.lifestyleBag.length === 0) {
+          const idx = templates.map((_, i) => i);
+          for (let i = idx.length - 1; i > 0; i--) { const j = r(0, i); [idx[i], idx[j]] = [idx[j], idx[i]]; }
+          if (idx[idx.length - 1] === this.lastLifestyleIdx) { [idx[0], idx[idx.length - 1]] = [idx[idx.length - 1], idx[0]]; }
+          this.lifestyleBag = idx;
+        }
+        const t = this.lifestyleBag.pop();
+        this.lastLifestyleIdx = t;
+        const item = templates[t]();
+        this.currentLifestyleItem = item;
+
+        document.getElementById('lifestyleStoryTitle').innerText = item.title;
+        document.getElementById('lifestyleStoryPrompt').innerText = item.prompt;
+        document.getElementById('lifestyleAnswerInput').value = '';
+        document.getElementById('lifestyleFeedback').classList.add('hidden');
+        this.lifestyleLocked = false;
+        document.getElementById('lifestyleAnswerInput').focus();
+      },
+
+      showLeaderboard(scope = 'all', refresh = false) {
+        if (!refresh) {
+          this.hideAllViews();
+          document.getElementById('viewLeaderboard').classList.remove('hidden');
+          Cloud.watch();
+        }
+        this.lbScope = scope;
+        const me = this.activeProfile;
+        const live = Cloud.ready;
+        let list = live ? Cloud.list.slice() : this.profiles.map(x => ({
+          id: x.id, name: String(x.name).trim().split(/\s+/)[0], grade: String(x.grade), section: String(x.section),
+          core: x.corePoints, life: x.lifestylePoints, total: x.corePoints + x.lifestylePoints, certs: x.certificates.length, updated: 0
+        }));
+        if (scope === 'class' && me) list = list.filter(x => x.grade === String(me.grade) && x.section === String(me.section));
+        list.sort((a, b) => b.total - a.total);
+        const on = 'px-3 py-2 rounded-xl text-xs font-black bg-indigo-600 text-white';
+        const off = 'px-3 py-2 rounded-xl text-xs font-black bg-white text-slate-600 border border-slate-200';
+        document.getElementById('lbTabAll').className = scope === 'all' ? on : off;
+        document.getElementById('lbTabClass').className = scope === 'class' ? on : off;
+        document.getElementById('lbStatus').innerText = live ? '☁️ Live: students from all phones, ranked by total points' : '📱 Students on this device only, ranked by total points';
+        const medals = ['🥇', '🥈', '🥉'];
+        document.getElementById('leaderboardList').innerHTML = list.length ? list.map((x, i) => `
+          <div class="flex items-center gap-3 p-3 rounded-2xl border ${me && x.id === me.id ? 'bg-amber-50 border-amber-300' : 'bg-slate-50 border-slate-200'}">
+            <div class="w-9 text-center text-xl font-black">${medals[i] || (i + 1)}</div>
+            <div class="flex-1 min-w-0">
+              <p class="font-black text-slate-900 truncate">${this.esc(x.name)}${me && x.id === me.id ? ' (you)' : ''}</p>
+              <p class="text-[11px] text-slate-500">Class ${this.esc(x.grade)}-${this.esc(x.section)} · Core ${x.core} · Life ${x.life} · ${x.certs} cert(s)${x.updated ? ' · active ' + new Date(x.updated).toLocaleDateString('en-IN') : ''}</p>
+            </div>
+            <div class="text-right"><p class="font-black text-indigo-700">${x.total}</p><p class="text-[10px] text-slate-400">points</p></div>
+          </div>`).join('') : '<p class="text-sm text-slate-400 text-center py-6">No students yet.</p>';
+        if (!refresh) window.scrollTo({ top: 0, behavior: 'smooth' });
+      },
+
+      leaderboardBack() {
+        if (this.activeProfile) this.showDashboard(); else this.openFirstRegistrationModal();
+      },
+
+      openCloudLeaderboard() {
+        this.closeInspector();
+        const m = document.getElementById('registrationModal');
+        if (m) m.classList.add('hidden');
+        this.showLeaderboard('all');
+      },
+
+      printImpactReport() {
+        const ps = this.profiles || [];
+        if (!ps.length) return;
+        const total = x => x.corePoints + x.lifestylePoints;
+        const certs = ps.reduce((s, x) => s + x.certificates.length, 0);
+        const pts = ps.reduce((s, x) => s + total(x), 0);
+        const by = {};
+        ps.forEach(x => { const c = by[x.grade] = by[x.grade] || { n: 0, pts: 0, certs: 0 }; c.n++; c.pts += total(x); c.certs += x.certificates.length; });
+        const classRows = Object.keys(by).sort((a, b) => a - b).map(g => `<tr><td>Class ${this.esc(g)}</td><td>${by[g].n}</td><td>${Math.round(by[g].pts / by[g].n)}</td><td>${by[g].certs}</td></tr>`).join('');
+        const topRows = [...ps].sort((a, b) => total(b) - total(a)).slice(0, 10).map((x, i) => `<tr><td>${i + 1}</td><td>${this.esc(x.name)}</td><td>Class ${this.esc(x.grade)}-${this.esc(x.section)}</td><td>${total(x)}</td><td>${x.certificates.length}</td></tr>`).join('');
+        const w = window.open('', '_blank');
+        if (!w) { alert('Please allow pop-ups to print the report.'); return; }
+        w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Impact Report</title><style>body{font-family:Arial,sans-serif;padding:32px;color:#1e293b}h1{margin:0}h2{margin-top:26px;font-size:16px}table{border-collapse:collapse;width:100%;margin-top:8px}th,td{border:1px solid #cbd5e1;padding:8px;text-align:left;font-size:13px}th{background:#f1f5f9}.k{display:flex;gap:12px;margin-top:16px}.k div{flex:1;border:1px solid #cbd5e1;border-radius:10px;padding:12px;text-align:center;font-size:12px}.k b{display:block;font-size:26px;color:#4338ca}</style></head><body>
+          <h1>Math Mastery Academy · Impact Report</h1>
+          <p>${this.esc(ps[0].school)} · Generated ${this.localDate()}</p>
+          <div class="k"><div><b>${ps.length}</b>Students</div><div><b>${pts}</b>Total points earned</div><div><b>${Math.round(pts / ps.length)}</b>Average points</div><div><b>${certs}</b>Certificates issued</div></div>
+          <h2>Class-wise participation</h2>
+          <table><tr><th>Class</th><th>Students</th><th>Avg points</th><th>Certificates</th></tr>${classRows}</table>
+          <h2>Top 10 students</h2>
+          <table><tr><th>#</th><th>Name</th><th>Class</th><th>Points</th><th>Certificates</th></tr>${topRows}</table>
+          </body></html>`);
+        w.document.close();
+        setTimeout(() => w.print(), 400);
+      },
+
+      checkLifestyleMilestone() {
+        const milestones = [
+          { points: 250, title: 'Practical Problem Solver' },
+          { points: 500, title: 'Silver Practical Problem Solver' },
+          { points: 1000, title: 'Gold Practical Problem Solver' }
+        ];
+        const pts = this.activeProfile.lifestylePoints;
+        const m = milestones.find(x => pts >= x.points &&
+          !this.activeProfile.certificates.some(c => c.milestone === x.points));
+        if (!m) return null;
+
+        SoundFX.play('victory');
+        if (window.confetti) {
+          window.confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+        }
+
+        const certObj = {
+          id: 'PUMS-' + Math.floor(100000 + Math.random() * 900000),
+          topic: `Lifestyle Maths - ${m.title}`,
+          fullTitle: 'CERTIFICATE OF MASTERY IN LIFESTYLE MATHS',
+          date: this.localDate(),
+          grade: this.activeProfile.grade,
+          section: this.activeProfile.section,
+          milestone: m.points
+        };
+        this.activeProfile.certificates.push(certObj);
+        this.saveProfiles();
+        return certObj;
+      },
+
+      handleLifestyleSubmit(e) {
+        e.preventDefault();
+        const input = parseFloat(document.getElementById('lifestyleAnswerInput').value);
+        if (this.lifestyleLocked || isNaN(input)) return;
+        this.lifestyleLocked = true;
+        const fb = document.getElementById('lifestyleFeedback');
+
+        if (input === this.currentLifestyleItem.answer) {
+          SoundFX.play('correct');
+          this.activeProfile.lifestylePoints += 50;
+          this.saveProfiles();
+          document.getElementById('lifestyleCurrentScore').innerText = this.activeProfile.lifestylePoints;
+
+          fb.innerText = 'Excellent practical solution! மிகச் சிறந்த தீர்வு (+50 Points)';
+          fb.className = 'mb-4 p-3 rounded-2xl text-xs font-bold bg-emerald-100 text-emerald-800 block';
+
+          const milestoneCert = this.checkLifestyleMilestone();
+          if (milestoneCert) {
+            fb.innerText = 'Milestone reached! சான்றிதழ் பெற்றுவிட்டீர்கள்! Opening your certificate...';
+            setTimeout(() => {
+              this.renderCertificateView(milestoneCert);
+            }, 1400);
+          } else {
+            setTimeout(() => {
+              this.generateLifestyleProblem();
+            }, 1000);
+          }
+        } else {
+          SoundFX.play('wrong');
+          fb.innerText = `Not quite. Expected: ${this.currentLifestyleItem.answer}. Try another real-life question!`;
+          fb.className = 'mb-4 p-3 rounded-2xl text-xs font-bold bg-rose-100 text-rose-800 block';
+
+          setTimeout(() => {
+            this.generateLifestyleProblem();
+          }, 1400);
+        }
+      },
+
+      // --- STEALTH TEACHER / DEVELOPER CONSOLE ---
+      setupKeyboardShortcuts() {
+        // Emblem Triple Click
+        const emblem = document.getElementById('stealthEmblemTrigger');
+        if (emblem) {
+          emblem.addEventListener('click', () => {
+            this.stealthClicks++;
+            clearTimeout(this.stealthTimer);
+            if (this.stealthClicks >= 3) {
+              this.stealthClicks = 0;
+              this.openInspector();
+            } else {
+              this.stealthTimer = setTimeout(() => { this.stealthClicks = 0; }, 800);
+            }
+          });
+        }
+
+        // Shortcut: Ctrl+Shift+M or Alt+A
+        window.addEventListener('keydown', (e) => {
+          if ((e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'm') || (e.altKey && e.key.toLowerCase() === 'a')) {
+            e.preventDefault();
+            this.openInspector();
+          }
+        });
+      },
+
+      openInspector() {
+        document.getElementById('inspectorPasscodeInput').value = '';
+        document.getElementById('inspectorAuthView').classList.remove('hidden');
+        document.getElementById('inspectorDataView').classList.add('hidden');
+        document.getElementById('stealthInspectorModal').classList.remove('hidden');
+      },
+
+      closeInspector() {
+        document.getElementById('stealthInspectorModal').classList.add('hidden');
+      },
+
+      verifyInspectorPasscode() {
+        const pin = document.getElementById('inspectorPasscodeInput').value.trim();
+        if (pin === 'ananthan2026' || pin === 'pums123') {
+          document.getElementById('inspectorAuthView').classList.add('hidden');
+          document.getElementById('inspectorDataView').classList.remove('hidden');
+          this.renderInspectorTable();
+        } else {
+          document.getElementById('inspectorPasscodeInput').classList.add('border-rose-500');
+        }
+      },
+
+      renderInspectorTable() {
+        const tbody = document.getElementById('inspectorTableBody');
+        tbody.innerHTML = '';
+
+        if (this.profiles.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">No registered students found.</td></tr>`;
+          return;
+        }
+
+        this.profiles.forEach(p => {
+          const tr = document.createElement('tr');
+          tr.className = 'hover:bg-slate-50 transition';
+          tr.innerHTML = `
+            <td class="p-3 font-bold text-slate-900">${this.esc(p.name)}</td>
+            <td class="p-3">Class ${p.grade} - ${p.section}</td>
+            <td class="p-3 font-bold text-amber-600">${p.corePoints}</td>
+            <td class="p-3 font-bold text-emerald-600">${p.lifestylePoints}</td>
+            <td class="p-3 font-bold text-blue-600">${p.certificates.length}</td>
+            <td class="p-3 text-right">
+              <button onclick="App.switchActiveProfile('${p.id}'); App.closeInspector();" class="px-2.5 py-1 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 rounded text-[11px] font-bold">
+                Inspect
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      },
+
+      exportRosterCSV() {
+        if (!this.profiles || this.profiles.length === 0) return;
+        let csv = 'Student ID,Student Name,Class,Section,School,Core Points,Lifestyle Points,Certificates Count\n';
+        this.profiles.forEach(p => {
+          csv += `"${p.id}","${String(p.name).replace(/"/g, '""')}","Class ${p.grade}","${p.section}","${String(p.school).replace(/"/g, '""')}",${p.corePoints},${p.lifestylePoints},${p.certificates.length}\n`;
+        });
+
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.setAttribute('download', `PUMS_SIKKARAYAPURAM_ROSTER_${this.localDate()}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    };
+
+    // Initialize application when DOM is ready
+    window.addEventListener('DOMContentLoaded', () => {
+      App.init();
+    });
+  </script>
+</body>
+</html>
