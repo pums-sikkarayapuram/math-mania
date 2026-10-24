@@ -269,11 +269,17 @@
               <span>Enter Lifestyle Arena</span>
               <i class="fa-solid fa-arrow-right"></i>
             </button>
-            <button onclick="App.showLeaderboard('all')" class="w-full sm:w-auto mt-3 px-7 py-3 bg-emerald-900/40 hover:bg-emerald-900/60 text-white font-black rounded-2xl border border-white/30 transition active:scale-95 flex items-center justify-center gap-2">
-              <span>🏆 Leaderboard · தரவரிசை</span>
-            </button>
           </div>
         </div>
+      </div>
+
+      <!-- Leaderboard -->
+      <div class="bg-gradient-to-r from-amber-500 to-orange-600 rounded-3xl p-6 text-white shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h3 class="text-xl font-black heading-font">🏆 Leaderboard · தரவரிசை</h3>
+          <p class="text-amber-50 text-sm mt-1">Your class vs other sections and other schools. Core Maths and Lifestyle Maths have separate boards.</p>
+        </div>
+        <button onclick="App.showLeaderboard('students')" class="px-7 py-3 bg-white text-orange-700 font-black rounded-2xl shadow-lg active:scale-95 transition">View Leaderboard</button>
       </div>
 
       <!-- Earned Certificates Gallery -->
@@ -466,18 +472,24 @@
     </section>
 
     <!-- VIEW 5: LIFESTYLE MATHS (வாழ்க்கைக் கணிதம்) -->
-    <section id="viewLeaderboard" class="hidden max-w-3xl mx-auto space-y-5">
+    <section id="viewLeaderboard" class="hidden max-w-3xl mx-auto space-y-3">
       <div class="flex items-center justify-between gap-2">
         <button onclick="App.leaderboardBack()" class="text-xs font-bold text-indigo-700 bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-200 flex items-center gap-2">
           <i class="fa-solid fa-arrow-left"></i> Back
         </button>
-        <div class="flex gap-2">
-          <button id="lbTabAll" onclick="App.showLeaderboard('all')" class="px-3 py-2 rounded-xl text-xs font-black">Whole School</button>
-          <button id="lbTabClass" onclick="App.showLeaderboard('class')" class="px-3 py-2 rounded-xl text-xs font-black">My Class</button>
-        </div>
+        <select id="lbGrade" onchange="App.showLeaderboard(App.lbScope, true)" class="px-3 py-2 rounded-xl text-xs font-black bg-white border border-slate-300"></select>
       </div>
-      <div class="bg-white rounded-3xl p-6 shadow-xl border border-slate-200">
-        <h2 class="text-xl font-black text-slate-900">🏆 Leaderboard · தரவரிசை</h2>
+      <div class="grid grid-cols-2 gap-2">
+        <button id="lbMetCore" onclick="App.setLbMetric('core')">➗ Core Maths</button>
+        <button id="lbMetLife" onclick="App.setLbMetric('life')">🛒 Lifestyle Maths</button>
+      </div>
+      <div class="grid grid-cols-3 gap-2">
+        <button id="lbTabStudents" onclick="App.showLeaderboard('students', true)">Students</button>
+        <button id="lbTabSections" onclick="App.showLeaderboard('sections', true)">Sections</button>
+        <button id="lbTabSchools" onclick="App.showLeaderboard('schools', true)">Schools</button>
+      </div>
+      <div class="bg-white rounded-3xl p-5 shadow-xl border border-slate-200">
+        <h2 id="lbTitle" class="text-lg font-black text-slate-900"></h2>
         <p id="lbStatus" class="text-xs text-slate-500 mt-1"></p>
         <div id="leaderboardList" class="mt-4 space-y-2"></div>
       </div>
@@ -866,6 +878,11 @@
       unwatch() {
         if (this.unsub) { this.unsub(); this.unsub = null; }
       },
+      remove(id) {
+        clearTimeout(this.timers[id]);
+        if (!this.db) return;
+        this.db.collection('students').doc(String(id)).delete().catch(() => {});
+      },
       push(pr) {
         if (!this.db || !pr) return;
         clearTimeout(this.timers[pr.id]);
@@ -876,7 +893,7 @@
             this.db.collection('students').doc(String(pr.id)).set({
               id: String(pr.id), uid: this.uid,
               name: String(pr.name).trim().split(/\s+/)[0].slice(0, 20),
-              grade: String(pr.grade), section: String(pr.section),
+              grade: String(pr.grade), section: String(pr.section), school: String(pr.school || '').trim().slice(0, 40),
               core: pr.corePoints, life: pr.lifestylePoints, total,
               certs: pr.certificates.length, updated: Date.now()
             }).catch(() => {});
@@ -886,7 +903,8 @@
     };
 
     const App = {
-      lbScope: 'all',
+      lbScope: 'students',
+      lbMetric: 'core',
       storageKey: 'PUMS_MATH_PROFILES_V2',
       activeProfileIdKey: 'PUMS_ACTIVE_PROFILE_ID_V2',
       
@@ -898,7 +916,7 @@
       currentProblem: null,
       streak: 0,
       stepInLevel: 1,
-      targetSteps: 5,
+      targetSteps: 50,
       timerSeconds: 0,
       timerInterval: null,
       
@@ -1064,10 +1082,34 @@
                 <p class="text-[10px] text-slate-400">Class ${p.grade}-${p.section}</p>
               </div>
             </div>
-            <span class="text-xs font-black text-amber-600">${p.corePoints} pts</span>
+            <div class="flex items-center gap-2"><span class="text-xs font-black text-amber-600">${p.corePoints} pts</span><button onclick="event.stopPropagation(); App.deleteProfile('${p.id}')" class="text-sm" title="Delete account">🗑️</button></div>
           `;
           list.appendChild(row);
         });
+      },
+
+      deleteProfile(id) {
+        const pr = this.profiles.find(x => x.id === id);
+        if (!pr) return;
+        if (!confirm(`Delete ${pr.name}'s account? All points and certificates will be lost. This cannot be undone.`)) return;
+        Cloud.remove(id);
+        const wasActive = !!(this.activeProfile && this.activeProfile.id === id);
+        this.profiles = this.profiles.filter(x => x.id !== id);
+        if (wasActive) this.activeProfile = null;
+        if (this.profiles.length === 0) {
+          try { localStorage.removeItem(this.activeProfileIdKey); } catch (e) {}
+          this.saveProfiles();
+          document.getElementById('accountDropdownMenu').classList.add('hidden');
+          this.openFirstRegistrationModal();
+        } else if (wasActive) {
+          this.activeProfile = this.profiles[0];
+          this.saveProfiles();
+          this.switchActiveProfile(this.profiles[0].id);
+        } else {
+          this.saveProfiles();
+          this.renderAccountDropdown();
+        }
+        this.renderInspectorTable();
       },
 
       switchActiveProfile(id) {
@@ -1107,7 +1149,7 @@
           certsContainer.innerHTML = `
             <div class="col-span-full py-6 text-center text-slate-400 text-xs">
               <i class="fa-solid fa-medal text-slate-300 text-2xl mb-1 block"></i>
-              No certificates earned yet. Complete all 5 steps of any topic to earn your first official certificate!
+              No certificates earned yet. Complete 50 sums in any topic to earn your first official certificate!
             </div>
           `;
         } else {
@@ -1257,7 +1299,7 @@
       // --- QUESTION ARENA GENERATOR ---
       startArena(topic) {
         this.currentSubtopic = topic;
-        this.stepInLevel = 1;
+        this.stepInLevel = Math.min(((this.activeProfile.topicProgress || {})[topic.id]) || 1, this.targetSteps);
         this.streak = 0;
         this.timerSeconds = 0;
 
@@ -1278,9 +1320,9 @@
         const step = this.stepInLevel;
 
         document.getElementById('arenaStreakCount').innerText = this.streak;
-        document.getElementById('arenaLevelProgressText').innerText = `Step ${step} of ${this.targetSteps}`;
+        document.getElementById('arenaLevelProgressText').innerText = `Sum ${step} of ${this.targetSteps}`;
         document.getElementById('arenaProgressBar').style.width = `${(step / this.targetSteps) * 100}%`;
-        document.getElementById('arenaLevelPill').innerText = `Step ${step}: ${step === 1 ? 'Foundational Level 0' : 'Advancing Level ' + (step - 1)}`;
+        document.getElementById('arenaLevelPill').innerText = `Sum ${step}: ${step <= 10 ? 'Warm-up' : step <= 35 ? 'Practice' : 'Mastery'}`;
 
         // Procedural generator strictly respecting the chosen operation & topic
         let p = { equation: '', answer: 0, hint: '' };
@@ -1546,13 +1588,16 @@
           fb.innerText = 'Correct! அருமை, சரியான விடை!';
           fb.className = 'mb-4 p-3 rounded-2xl text-xs font-bold bg-emerald-100 text-emerald-800 block';
 
+          this.activeProfile.topicProgress = this.activeProfile.topicProgress || {};
           if (this.stepInLevel >= this.targetSteps) {
-            // TOPIC CONQUERED -> AWARD DYNAMIC CERTIFICATE
+            // 50 SUMS DONE -> AWARD CERTIFICATE, then start the level afresh
+            delete this.activeProfile.topicProgress[this.currentSubtopic.id];
             setTimeout(() => {
               this.awardCertificate();
             }, 600);
           } else {
             this.stepInLevel++;
+            this.activeProfile.topicProgress[this.currentSubtopic.id] = this.stepInLevel;
             setTimeout(() => {
               this.generateNextProblem();
             }, 700);
@@ -1711,37 +1756,69 @@
         document.getElementById('lifestyleAnswerInput').focus();
       },
 
-      showLeaderboard(scope = 'all', refresh = false) {
+      setLbMetric(m) { this.lbMetric = m; this.showLeaderboard(this.lbScope, true); },
+
+      showLeaderboard(scope = 'students', refresh = false) {
+        const me = this.activeProfile;
+        const sel = document.getElementById('lbGrade');
+        if (!sel.options.length) for (let g = 1; g <= 8; g++) sel.add(new Option('Class ' + g, String(g)));
         if (!refresh) {
           this.hideAllViews();
           document.getElementById('viewLeaderboard').classList.remove('hidden');
           Cloud.watch();
+          if (me) sel.value = String(me.grade);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         this.lbScope = scope;
-        const me = this.activeProfile;
         const live = Cloud.ready;
-        let list = live ? Cloud.list.slice() : this.profiles.map(x => ({
-          id: x.id, name: String(x.name).trim().split(/\s+/)[0], grade: String(x.grade), section: String(x.section),
-          core: x.corePoints, life: x.lifestylePoints, total: x.corePoints + x.lifestylePoints, certs: x.certificates.length, updated: 0
+        const key = this.lbMetric === 'life' ? 'life' : 'core';
+        const sk = s => String(s || 'Unknown school').trim().toUpperCase();
+        const mySchool = me ? sk(me.school) : null;
+        const g = sel.value;
+        let all = live ? Cloud.list.slice() : this.profiles.map(x => ({
+          id: x.id, name: String(x.name).trim().split(/\s+/)[0], grade: String(x.grade), section: String(x.section), school: x.school,
+          core: x.corePoints, life: x.lifestylePoints, certs: x.certificates.length
         }));
-        if (scope === 'class' && me) list = list.filter(x => x.grade === String(me.grade) && x.section === String(me.section));
-        list.sort((a, b) => b.total - a.total);
+        all = all.filter(x => String(x.grade) === g).map(x => Object.assign({}, x, { k: sk(x.school), v: x[key] || 0 }));
+        let rows;
+        if (scope === 'students') {
+          const l = mySchool ? all.filter(x => x.k === mySchool) : all;
+          rows = l.sort((a, b) => b.v - a.v).map(x => ({ t: x.name, s: `Section ${x.section}${mySchool ? '' : ' · ' + x.k} · ${x.certs} cert(s)`, v: x.v, u: 'points', me: !!(me && x.id === me.id) }));
+        } else {
+          const grp = {};
+          all.filter(x => scope === 'schools' || !mySchool || x.k === mySchool).forEach(x => {
+            const k = scope === 'schools' ? x.k : x.k + '|' + x.section;
+            const o = grp[k] = grp[k] || { k: x.k, sec: x.section, n: 0, sum: 0 };
+            o.n++; o.sum += x.v;
+          });
+          rows = Object.values(grp).map(o => ({
+            t: scope === 'schools' ? o.k : `Class ${g}-${o.sec}`,
+            s: `${o.n} student(s) · total ${o.sum}${scope === 'sections' && !mySchool ? ' · ' + o.k : ''}`,
+            v: Math.round(o.sum / o.n), u: 'avg points',
+            me: !!(me && mySchool === o.k && (scope === 'schools' || String(o.sec) === String(me.section)))
+          })).sort((a, b) => b.v - a.v);
+        }
         const on = 'px-3 py-2 rounded-xl text-xs font-black bg-indigo-600 text-white';
         const off = 'px-3 py-2 rounded-xl text-xs font-black bg-white text-slate-600 border border-slate-200';
-        document.getElementById('lbTabAll').className = scope === 'all' ? on : off;
-        document.getElementById('lbTabClass').className = scope === 'class' ? on : off;
-        document.getElementById('lbStatus').innerText = live ? '☁️ Live: students from all phones, ranked by total points' : '📱 Students on this device only, ranked by total points';
+        document.getElementById('lbMetCore').className = key === 'core' ? on : off;
+        document.getElementById('lbMetLife').className = key === 'life' ? on : off;
+        ['students', 'sections', 'schools'].forEach(t => {
+          document.getElementById('lbTab' + t.charAt(0).toUpperCase() + t.slice(1)).className = scope === t ? on : off;
+        });
+        document.getElementById('lbTitle').innerText = `🏆 Class ${g} · ${key === 'life' ? 'Lifestyle' : 'Core'} Maths · ${scope.charAt(0).toUpperCase() + scope.slice(1)}`;
+        document.getElementById('lbStatus').innerText = (live ? '☁️ Live from all phones. ' : '📱 This device only. ') +
+          (scope === 'students' ? (mySchool ? 'Students of your class in your school.' : 'Students of this class from all schools.') :
+           scope === 'sections' ? 'Sections ranked by average points per student.' : 'Schools ranked by average points per student.');
         const medals = ['🥇', '🥈', '🥉'];
-        document.getElementById('leaderboardList').innerHTML = list.length ? list.map((x, i) => `
-          <div class="flex items-center gap-3 p-3 rounded-2xl border ${me && x.id === me.id ? 'bg-amber-50 border-amber-300' : 'bg-slate-50 border-slate-200'}">
+        document.getElementById('leaderboardList').innerHTML = rows.length ? rows.map((x, i) => `
+          <div class="flex items-center gap-3 p-3 rounded-2xl border ${x.me ? 'bg-amber-50 border-amber-300' : 'bg-slate-50 border-slate-200'}">
             <div class="w-9 text-center text-xl font-black">${medals[i] || (i + 1)}</div>
             <div class="flex-1 min-w-0">
-              <p class="font-black text-slate-900 truncate">${this.esc(x.name)}${me && x.id === me.id ? ' (you)' : ''}</p>
-              <p class="text-[11px] text-slate-500">Class ${this.esc(x.grade)}-${this.esc(x.section)} · Core ${x.core} · Life ${x.life} · ${x.certs} cert(s)${x.updated ? ' · active ' + new Date(x.updated).toLocaleDateString('en-IN') : ''}</p>
+              <p class="font-black text-slate-900 truncate">${this.esc(x.t)}${x.me ? ' (you)' : ''}</p>
+              <p class="text-[11px] text-slate-500">${this.esc(x.s)}</p>
             </div>
-            <div class="text-right"><p class="font-black text-indigo-700">${x.total}</p><p class="text-[10px] text-slate-400">points</p></div>
-          </div>`).join('') : '<p class="text-sm text-slate-400 text-center py-6">No students yet.</p>';
-        if (!refresh) window.scrollTo({ top: 0, behavior: 'smooth' });
+            <div class="text-right"><p class="font-black text-indigo-700">${x.v}</p><p class="text-[10px] text-slate-400">${x.u}</p></div>
+          </div>`).join('') : '<p class="text-sm text-slate-400 text-center py-6">No students in this class yet.</p>';
       },
 
       leaderboardBack() {
@@ -1752,7 +1829,7 @@
         this.closeInspector();
         const m = document.getElementById('registrationModal');
         if (m) m.classList.add('hidden');
-        this.showLeaderboard('all');
+        this.showLeaderboard('students');
       },
 
       printImpactReport() {
@@ -1782,9 +1859,9 @@
 
       checkLifestyleMilestone() {
         const milestones = [
-          { points: 250, title: 'Practical Problem Solver' },
-          { points: 500, title: 'Silver Practical Problem Solver' },
-          { points: 1000, title: 'Gold Practical Problem Solver' }
+          { points: 2500, title: 'Practical Problem Solver' },
+          { points: 5000, title: 'Silver Practical Problem Solver' },
+          { points: 10000, title: 'Gold Practical Problem Solver' }
         ];
         const pts = this.activeProfile.lifestylePoints;
         const m = milestones.find(x => pts >= x.points &&
@@ -1918,6 +1995,7 @@
               <button onclick="App.switchActiveProfile('${p.id}'); App.closeInspector();" class="px-2.5 py-1 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 rounded text-[11px] font-bold">
                 Inspect
               </button>
+              <button onclick="App.deleteProfile('${p.id}')" class="px-2.5 py-1 bg-rose-50 text-rose-700 hover:bg-rose-100 rounded text-[11px] font-bold ml-1">Delete</button>
             </td>
           `;
           tbody.appendChild(tr);
